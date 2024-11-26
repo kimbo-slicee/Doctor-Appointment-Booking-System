@@ -8,9 +8,10 @@ import Contact from "./pages/contact";
 import Appointment from "./pages/appointment";
 import MyAppointments from "./pages/MyAppointment";
 import NavBar from "./components/navBar";
+import Footer from "./components/Footer.jsx";
 export default function App() {
     return (
-    <div>
+    <div className="mx-4 sm:mx-[5%]">
       <NavBar/>
       <Routes>
         <Route path="/" element={<Home/>}/>
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/appointment/:docId" element={<Appointment/>}/>
         <Route path="/myAppointments" element={<MyAppointments/>}/>
       </Routes>
+    <Footer/>
     </div>
     )
   }
