@@ -1,7 +1,7 @@
 import {Route,Routes} from "react-router-dom";
 import Home from "./pages/home";
 import About from "./pages/about";
-import Doctors from "./pages/doctors";
+import Doctors from "./pages/Doctors.jsx";
 import Login from "./pages/Login"
 import Profile from "./pages/profile";
 import Contact from "./pages/contact";
@@ -12,7 +12,7 @@ import Footer from "./components/Footer.jsx";
 export default function App() {
     return (
     <div className="mx-4 sm:mx-[5%]">
-      <NavBar/>
+      <NavBar />
       <Routes>
         <Route path="/" element={<Home/>}/>
         <Route path="/doctors" element={<Doctors/>}/>
