@@ -11,7 +11,6 @@ function Doctors() {
   useEffect(() => {
   applyFilter();
   }, [ doctors, speciality]);
-  console.log(speciality);
   return (
     <div>
        <p className="text-gray-900">Browse through the doctors specialist.</p>
@@ -34,8 +33,8 @@ function Doctors() {
                     className="border border-blue-200 rounded-xl overflow-hidden cursor-pointer
                          hover:translate-y-[-10px] transition-all
                          duration-500">
-                  <img className="bg-blue-200" src={doc.image} alt=" Doctore image"/>
-                  <div className="p-4">
+                   <img className="bg-blue-200" src={doc.image} alt=" Doctore image"/>
+                   <div className="p-4">
                     <div className="flex items-center gap2 text-sm text-center text-green-500">
                       <p className="w-2 h-2 bg-green-500 rounded-full"></p><p>Available</p>
                     </div>

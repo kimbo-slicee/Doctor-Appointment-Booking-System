@@ -1,0 +1,2 @@
+### Project Description 
+This repository contains a Full Stack Doctor Appointment Booking System built using the MERN stack. The application leverages React for the front-end and Node.js with Express.js for the back-end, providing a seamless and efficient platform for managing doctor appointments. MongoDB is used for the database to store and retrieve data effectively. This project demonstrates a comprehensive full-stack implementation suitable for real-world use cases.

@@ -28,7 +28,8 @@ function TopDoc() {
                         </div>
                 ))}
             </div>
-            <button onClick={()=>{navigateFunction('/doctors');scroll(0,0)}} className="bg-blue-100 text-gray-900 px-12 py-3 rounded-full mt-10">more</button>
+            <button onClick={()=>{navigateFunction('/doctors');scroll(0,0)}}
+                    className="bg-blue-100 text-gray-900 px-12 py-3 rounded-full mt-10">more</button>
         </div>
     );
 }
