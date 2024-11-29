@@ -3,7 +3,7 @@ import Home from "./pages/Home.jsx";
 import About from "./pages/about";
 import Doctors from "./pages/Doctors.jsx";
 import Login from "./pages/Login.jsx"
-import Profile from "./pages/profile";
+import Profile from "./pages/Profile.jsx";
 import Contact from "./pages/Contact.jsx";
 import Appointment from "./pages/Appointment.jsx";
 import MyAppointments from "./pages/MyAppointment";
