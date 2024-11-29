@@ -60,7 +60,6 @@ function Appointment() {
      }, [docInfo]);
 
      useEffect(() => {
-        console.log(docSlots)
          }, [docSlots]);
 
 
