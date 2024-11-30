@@ -13,7 +13,7 @@ const userSchema=new mongoose.Schema({
         unique:true
     },
     phone:{
-        type:String,
+        type:Number,
         required:[true,"Please Provide User Phone "],
         minLength:5,
         maxLength:20,
@@ -44,7 +44,16 @@ const userSchema=new mongoose.Schema({
     dob:{
         type:String,
         default:Date.now()// static methode
-    }
+    },
+    role:{
+        type:String,
+        default:"user"
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
 
 },{timestamps:true})
-const userModel=mongoose.model('user',userSchema);
+const userModel= mongoose.models.user||mongoose.model('user',userSchema);
+export default userModel
