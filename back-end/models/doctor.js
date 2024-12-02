@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import {v2 as cloudinary} from "cloudinary";
 const doctorSchema=new mongoose.Schema({
     name:{
         type:String,
@@ -82,8 +83,9 @@ doctorSchema.pre('save',async function (next){
     this.password=await bcrypt.hash(this.password,salt);
     next()
     })
-doctorSchema.pre('save',async function(next){
 
-})
+// doctorSchema.methods.getIMageLink=async function (){
+//     const image =this.image
+// }
 const DoctorModel=mongoose.models.doctor ||  mongoose.model('doctor',doctorSchema);
 export default  DoctorModel;
