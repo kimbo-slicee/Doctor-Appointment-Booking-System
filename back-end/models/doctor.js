@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 const doctorSchema=new mongoose.Schema({
     name:{
         type:String,
@@ -9,12 +10,10 @@ const doctorSchema=new mongoose.Schema({
         type:String,
         required:[true,"Please Provide Doctor Email"],
         minLength:4,
-        maxLength:20,
-        match:/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         unique:true
     },
     phone:{
-        type:Number,
+        type:String,
         required:[true,"Please Provide Doctor Phone Number "],
         minLength:6,
         maxLength:20,
@@ -41,12 +40,11 @@ const doctorSchema=new mongoose.Schema({
     },
     experience:{
         type:String,
-        required:[true,"please Provide Doctor experience Years"]
     },
     about:{
         type:String,
         required:[true,"please Provide Doctor About "],
-        minLength:100
+        minLength:20
     },
     available:{
         type:Boolean,
@@ -69,8 +67,7 @@ const doctorSchema=new mongoose.Schema({
 
     },
     date:{
-        Type:String,
-        required:[true,"Pleas Provide Doctor Date"]
+        Type:Number,
 
     },
     slots_booked:{
@@ -78,12 +75,15 @@ const doctorSchema=new mongoose.Schema({
         default:{}
 
     },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-
 
 },{timestamps:true,minimize:false});
-const doctorModel=mongoose.models.doctor ||  mongoose.model('doctor',doctorSchema);
-export default  doctorModel;
+doctorSchema.pre('save',async function (next){
+    const salt=await bcrypt.genSalt(10);
+    this.password=await bcrypt.hash(this.password,salt);
+    next()
+    })
+doctorSchema.pre('save',async function(next){
+
+})
+const DoctorModel=mongoose.models.doctor ||  mongoose.model('doctor',doctorSchema);
+export default  DoctorModel;
