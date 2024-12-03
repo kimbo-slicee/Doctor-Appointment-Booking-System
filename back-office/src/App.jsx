@@ -4,6 +4,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import {Fragment, useContext} from "react";
 import {AdminContext} from "./context/AdminContext.jsx";
 import {NavBar} from "./components/NavBar.jsx";
+import SideBar from "./components/SideBar.jsx";
+import {Route, Routes} from "react-router-dom";
+import DashBoard from "./pages/admin/DashBoard.jsx";
+import Appointments from "./pages/admin/Appointments.jsx";
+import DocLists from "./pages/admin/DocLists.jsx";
+import AddDoc from "./pages/admin/AddDoc.jsx";
+
+
+
 const App = () => {
     const {adminToken}=useContext(AdminContext);
     return adminToken
@@ -11,6 +20,16 @@ const App = () => {
         <div className="bg-[#F8F9FD]">
             <ToastContainer/>
             <NavBar/>
+            <div className="felx items-start">
+                <SideBar/>
+                <Routes>
+                    <Route path="/" element={<></>}/>
+                    <Route path="/AddDoctors" element={<AddDoc/>}/>
+                    <Route path="/DashBoard" element={<DashBoard/>}/>
+                    <Route path="/DoctorsList" element={<DocLists/>}/>
+                    <Route path="/Appointments" element={<Appointments/>}/>
+                </Routes>
+            </div>
         </div>
     )
     :(
