@@ -1,7 +1,9 @@
+import Login from "./pages/Login.jsx";
+
 const App = () => {
     return (
-        <div className="text-rose-800 font-bold text-center">
-            Hello World
+        <div>
+        <Login/>
         </div>
     )
 }
