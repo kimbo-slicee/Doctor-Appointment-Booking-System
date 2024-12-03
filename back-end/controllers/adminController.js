@@ -45,7 +45,7 @@ const createDoc=async (req,res)=>{
         }
 
     }else{
-            res.status(StatusCodes.BAD_REQUEST).json({success:true,message:"Email or password are not Valid"});
+            res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Email or password are not Valid"});
 
     }
 
