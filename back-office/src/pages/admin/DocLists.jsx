@@ -1,6 +1,8 @@
 const DocLists=()=>{
     return (
-        <div></div>
+        <div>
+            DocList
+        </div>
     )
 }
 export default DocLists;

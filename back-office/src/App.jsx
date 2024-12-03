@@ -20,12 +20,12 @@ const App = () => {
         <div className="bg-[#F8F9FD]">
             <ToastContainer/>
             <NavBar/>
-            <div className="felx items-start">
+            <div className="felx items-start max-w-sm">
                 <SideBar/>
                 <Routes>
                     <Route path="/" element={<></>}/>
-                    <Route path="/AddDoctors" element={<AddDoc/>}/>
                     <Route path="/DashBoard" element={<DashBoard/>}/>
+                    <Route path="/AddDoctors" element={<AddDoc/>}/>
                     <Route path="/DoctorsList" element={<DocLists/>}/>
                     <Route path="/Appointments" element={<Appointments/>}/>
                 </Routes>
