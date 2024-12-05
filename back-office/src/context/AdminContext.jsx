@@ -20,8 +20,18 @@ const AdminContextProvider=(props)=>{
             toast.error(error)
         }
     }
+    const changeAvailability=async (docId)=>{
+        try{
+            const {data}=await axios.patch(`${backEndUrl}/api/v1/admin/${docId}`,{},{headers:{Authorization:adminToken}});
+            if(data.success){
+                    console.log(data);
+            }
+        }catch (error){
+            console.log(error)
+        }
+    }
     const value={
-        adminToken,setAdminToken,backEndUrl,fetchAllDoctors,doctors
+        adminToken,setAdminToken,backEndUrl,fetchAllDoctors,doctors, changeAvailability
     }
  return(
      <AdminContext.Provider value={value}>

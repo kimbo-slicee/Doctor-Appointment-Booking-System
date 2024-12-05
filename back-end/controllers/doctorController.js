@@ -1,20 +1,20 @@
 import DoctorModel from "../models/doctor.js";
+import NotFound from "../Error/index.js";
 import {StatusCodes} from "http-status-codes";
 
-const changeAvilibelt=async (req,res)=>{
-    try{
-    const {docId}=req.body
-    const doctorData=await DoctorModel.findById(docId);
-    if(!doctorData) {
-        res.status(StatusCodes.NOT_FOUND).json({success:false,message:`doctor withe id ${docId} Doesn't exist`})
-    }
-    await doctorData.findByIdAndUpdate(docId,{available:!doctorData.available});
-        res.status(StatusCodes.OK).json({success:true,message:"Availability Changed"});
-    }catch (error){
-        console.log(error);
-        res.status(StatusCodes.NOT_MODIFIED)
-    }
+const changeAvailability=async (req,res)=>{
+    const {
+        body:{available},
+        params:{id:docId},
+    }=req;
+    console.log(available);
+    console.log(docId)
+    const upDatedDoctorAvailability =await DoctorModel.findByIdAndUpdate(
+        {_id:docId}, req.body, {new:true,runValidators:true});
+    if(!upDatedDoctorAvailability) throw new NotFound("DOCTOR DOESN'T EXIST ");
+
+    res.status(StatusCodes.OK).json({data:upDatedDoctorAvailability});
 
 
 }
-export {changeAvilibelt}
+export {changeAvailability}
