@@ -1,6 +1,6 @@
 import {createContext} from "react";
 const DoctorContext=createContext(null);
-const DoctorContextProvidr=(props)=>{
+const DoctorContextProvider=(props)=>{
     const value={}
     return(
         <DoctorContext.Provider value={value}>
@@ -8,4 +8,4 @@ const DoctorContextProvidr=(props)=>{
         </DoctorContext.Provider>
     )
 }
-export default DoctorContextProvidr;
+export default DoctorContextProvider;

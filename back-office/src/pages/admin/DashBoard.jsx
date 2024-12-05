@@ -1,8 +1,8 @@
 const DashBoard=()=>{
-    return(
-        <div>
-            DashBoard
-        </div>
-    )
+ return (
+     <div>
+         DashBoard
+     </div>
+ )
 }
 export default DashBoard

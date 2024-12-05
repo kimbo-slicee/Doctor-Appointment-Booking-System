@@ -20,9 +20,9 @@ app.use(cors());
 // api end point
 app.use('/api/v1',adminRoute);
 // Error Middlewares
-app.use(notFound);
-// Global error handler (for other types of errors)
-app.use(errorHandler);
+// app.use(notFound);
+// // Global error handler (for other types of errors)
+// app.use(errorHandler);
 app.listen(port,()=>{
     console.log(`server Listing in Port ${port}`)
 })

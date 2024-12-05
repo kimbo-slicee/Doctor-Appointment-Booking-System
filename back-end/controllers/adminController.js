@@ -1,13 +1,22 @@
- import {StatusCodes} from "http-status-codes";
+import {StatusCodes} from "http-status-codes";
 import {v2 as cloudinary} from "cloudinary";
 import DoctorModel from "../models/doctor.js";
 import validator from "validator";
- import jwt from "jsonwebtoken";
- import {CustomError} from "../Error/CustomAPIError.js";
+import jwt from "jsonwebtoken";
+import {CustomError} from "../Error/CustomAPIError.js";
 const createDoc=async (req,res)=>{
-    const {name,email,password,experience,phone,degree,about,fees,speciality,available,address}=req.body
+    const {name,email,password,experience,phone,degree,about,fess,speciality,available,address}=req.body
     const imageFile=req.file;
-    if(!name|| !email || !password || !phone || !degree || !about || !fees|| !speciality || !available||!address){
+    if(    !name
+        || !email
+        || !password
+        || !phone
+        || !degree
+        || !about
+        || !fess
+        || !speciality
+        || !address
+    ){
         res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"All Fields Are Require "})
     }
     if(!validator.isEmail(email)){
@@ -22,7 +31,7 @@ const createDoc=async (req,res)=>{
         phone,
         degree,
         about,
-        fees,
+        fess,
         experience,
         image:imageUrl,
         speciality,
@@ -49,10 +58,23 @@ const createDoc=async (req,res)=>{
 
     }
 
-
-
  }
+ // add Controller to Fetch all doctors
+const getAllDoctors=async (req, res)=>{
+    try{
+    const doctors=await DoctorModel.find({}).select('-password')
+        if(!doctors){
+        res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Oops No Doctor founded"})
+        }
+    res.status(StatusCodes.OK).json({success:true,data:doctors})
+
+    }catch (error){
+        res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Server Error"})
+    }
+
+}
 export {
     createDoc,
-    login
+    login,
+    getAllDoctors
 }

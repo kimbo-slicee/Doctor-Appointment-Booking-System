@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import {v2 as cloudinary} from "cloudinary";
 const doctorSchema=new mongoose.Schema({
     name:{
         type:String,
@@ -44,17 +43,14 @@ const doctorSchema=new mongoose.Schema({
     },
     about:{
         type:String,
-        required:[true,"please Provide Doctor About "],
-        minLength:20
     },
     available:{
         type:Boolean,
-        require:[true,"Pleas Provide Doctor Availability "],
+        default:true
 
     },
-    fees:{
+    fess:{
         type:Number,
-        required:[true,"Pleas Provide Doctor Fees"]
 
     },
     address:{
