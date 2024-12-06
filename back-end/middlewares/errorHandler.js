@@ -5,6 +5,7 @@ const errorHandler = (err, req, res,next) => {
         next();
         return res.status(err.statusCode).json({ msg: err.message });
     }
+    console.log(err)
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         msg: 'Something went wrong, please try again later.',
     });

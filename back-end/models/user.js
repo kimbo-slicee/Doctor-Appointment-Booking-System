@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 const userSchema=new mongoose.Schema({
     name:{
         type:String,
@@ -13,7 +15,7 @@ const userSchema=new mongoose.Schema({
         unique:true
     },
     phone:{
-        type:Number,
+        type:String,
         required:[true,"Please Provide User Phone "],
         minLength:5,
         maxLength:20,
@@ -27,7 +29,6 @@ const userSchema=new mongoose.Schema({
     },
     address:{
         type:Object,
-        required:[true,"Please Provide A Valid User Address"],
         minLength:5,
         maxLength:50,
     },
@@ -39,11 +40,10 @@ const userSchema=new mongoose.Schema({
     gender:{
         type:String,
         default:"Male",
-        required:[true,"Please Provide A Valid User Gender"]
     },
     dob:{
         type:String,
-        default:Date.now()// static methode
+        default:Date.now()
     },
     role:{
         type:String,
@@ -54,6 +54,16 @@ const userSchema=new mongoose.Schema({
         default: Date.now,
     },
 
-},{timestamps:true})
+},{timestamps:true});
+// before saving user instance this methode wil invoked to hash password
+userSchema.pre('save',async function (next){
+    const salt=await bcrypt.genSalt(10);
+    this.password=await bcrypt.hash(this.password,salt);
+    next()
+})
+userSchema.methods.createJWT=function (){
+    return jwt.sign({userID:this._id,name:this.name,email:this.email},
+        process.env.JWT_SECRET,{expiresIn:process.env.JWT_LIFETIMIE})
+}
 const userModel= mongoose.models.user||mongoose.model('user',userSchema);
 export default userModel

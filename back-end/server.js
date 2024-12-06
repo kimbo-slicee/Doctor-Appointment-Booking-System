@@ -8,6 +8,7 @@ import adminRoute from "./routes/adminRoute.js";
 import doctorRoute from "./routes/doctorRoute.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import notFound from "./middlewares/notFound.js";
+import userRoute from "./routes/userRoute.js";
 
 // App Config
 const app=express();
@@ -22,6 +23,7 @@ app.use(cors());
 // api end point
 app.use('/api/v1/admin',adminRoute);
 app.use('/api/v1/doctor',doctorRoute);
+app.use('/api/v1/user',userRoute);
 //Error Middlewares
 app.use(notFound);
 // // Global error handler (for other types of errors)
