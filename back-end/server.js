@@ -5,6 +5,7 @@ import "dotenv/config.js";
 import connectDB from "./config/mongoDB.js";
 import connectCloudinary from "./config/cloudinaryStorage.js";
 import adminRoute from "./routes/adminRoute.js";
+import doctorRoute from "./routes/doctorRoute.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import notFound from "./middlewares/notFound.js";
 
@@ -16,13 +17,15 @@ connectCloudinary().then(_ =>console.log("connectCloudinary Working "));// conne
 // Cloud Storage
 // Middleware
 app.use(express.json());
+// Cors Middleware
 app.use(cors());
 // api end point
-app.use('/api/v1',adminRoute);
-// Error Middlewares
-// app.use(notFound);
+app.use('/api/v1/admin',adminRoute);
+app.use('/api/v1/doctor',doctorRoute);
+//Error Middlewares
+app.use(notFound);
 // // Global error handler (for other types of errors)
-// app.use(errorHandler);
+app.use(errorHandler);
 app.listen(port,()=>{
     console.log(`server Listing in Port ${port}`)
 })

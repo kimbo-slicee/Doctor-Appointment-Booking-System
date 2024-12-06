@@ -1,5 +1,5 @@
 import React, {useContext} from 'react'
-import {AppContext} from "../context/AppContextProvider.jsx";
+import {AppContext} from "../context/AppContext.jsx";
 
 function MyAppointments() {
   const {doctors}=useContext(AppContext)

@@ -80,8 +80,5 @@ doctorSchema.pre('save',async function (next){
     next()
     })
 
-// doctorSchema.methods.getIMageLink=async function (){
-//     const image =this.image
-// }
 const DoctorModel=mongoose.models.doctor ||  mongoose.model('doctor',doctorSchema);
 export default  DoctorModel;

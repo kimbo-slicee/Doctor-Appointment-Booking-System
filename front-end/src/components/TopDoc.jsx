@@ -1,6 +1,6 @@
-import {useNavigate, useOutletContext} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useContext} from "react";
-import {AppContext} from "../context/AppContextProvider.jsx";
+import {AppContext} from "../context/AppContext.jsx";
 
 function TopDoc() {
     const navigateFunction=useNavigate();

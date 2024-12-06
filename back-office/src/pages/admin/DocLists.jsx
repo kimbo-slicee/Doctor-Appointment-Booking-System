@@ -2,11 +2,10 @@ import {useContext, useEffect} from "react";
 import {AdminContext} from "../../context/AdminContext.jsx";
 
 const DocLists=()=>{
-    const {doctors,adminToken,fetchAllDoctors}=useContext(AdminContext);
+    const {doctors,adminToken,fetchAllDoctors,changeAvailability}=useContext(AdminContext);
     useEffect(() => {
         if(adminToken){
             fetchAllDoctors();
-            console.log(doctors)
         }
     }, [adminToken]);
     return (
@@ -15,7 +14,7 @@ const DocLists=()=>{
             <div className="w-full flex flex-wrap gap-4 pt-5 gap-y-6 ">
                 {
                     doctors.map((doctor,index)=>(
-                        <div key={index} className="max-50 border border-indigo-200 rounded-xl mx-w-50 overflow-hidden group">
+                        <div key={index} className="border border-indigo-200 rounded-xl max-w-30 overflow-hidden group">
                             <img src={doctor.image} alt="Doctor image" className="bg-indigo-50 hover:bg-primary transition-all duration-500"/>
                             <div className="p-4">
                                 <p className="text-neutral-800 text-lg font-medium">{doctor.name}</p>
@@ -23,15 +22,16 @@ const DocLists=()=>{
                                 </p>
                                 <div className="mt-2 flex items-center gap-1 text-sm ">
                                     <label className="flex items-center cursor-pointer relative">
-                                        <input type="checkbox" defaultChecked={doctor.availability}
+                                        <input value="true"
+                                               onClick={()=>changeAvailability(doctor._id)}
+                                            type="checkbox" defaultChecked={doctor.available}
                                                className="peer h-5 w-5 cursor-pointer
                                                 transition-all
                                                  appearance-none
                                                  rounded shadow hover:shadow-md
                                                   border border-slate-300
-                                                  checked:bg-blue-600 checked:border-blue-600
-                                                  "
-                                               id="check1"/>
+                                                  checked:bg-green-500 checked:border-green-500
+                                                  " id="check1"/>
                                         <span
                                             className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"

@@ -1,5 +1,5 @@
 import {StatusCodes} from "http-status-codes";
-import {CustomError} from "../Error/CustomAPIError.js";
+import {CustomError} from "../Error/index.js";
 const errorHandler = (err, req, res,next) => {
     if (err instanceof CustomError) {
         next();

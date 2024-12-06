@@ -1,10 +1,10 @@
-import {StatusCodes} from "http-status-codes";
 import {CustomError} from "./CustomAPIError.js";
-
-class NotFound extends CustomError{
-    constructor(message) {
-        super(message);
-        this.statusCode=StatusCodes.NOT_FOUND;
-    }
+import unauthenticatedError from "./unauthenticatedError.js";
+import NotFound from "./notFound.js";
+import BadRequestError from "./badRequest.js";
+export {
+    CustomError,
+    NotFound,
+    BadRequestError,
+    unauthenticatedError
 }
-export default NotFound;
