@@ -64,6 +64,15 @@ userSchema.pre('save',async function (next){
 userSchema.methods.createJWT=function (){
     return jwt.sign({userID:this._id,name:this.name,email:this.email},
         process.env.JWT_SECRET,{expiresIn:process.env.JWT_LIFETIMIE})
+};
+userSchema.methods.getName=function (){
+    return this.name;
+}
+userSchema.methods.getEmail=function (){
+    return this.email
+};
+userSchema.methods.comparePassword=async function(userPass){
+    return await bcrypt.compare(userPass, this.password)
 }
 const userModel= mongoose.models.user||mongoose.model('user',userSchema);
 export default userModel

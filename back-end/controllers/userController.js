@@ -1,7 +1,9 @@
-// register
+// Register Controller
 import {StatusCodes} from "http-status-codes";
 import validator from "validator";
 import userModel from "../models/user.js";
+import NotFound from "../Error/notFound.js";
+import unauthenticatedError from "../Error/unauthenticatedError.js";
 const register=async (req, res)=>{
 const {name,email,password,phone}=req.body;
 console.log(req.body);
@@ -19,9 +21,18 @@ if(password.length<0){
     res.status(StatusCodes.CREATED).json({success:true,token});
 }
 
-//Login
-const login=async ()=>{
-
+//Login Controller
+const login=async (req,res)=>{
+const {email,password}=req.body;
+if(!email || !password)res.status(StatusCodes.NOT_FOUND).json({success:false,msg:"Invalid Email or password"});
+const user=await userModel.findOne({email});
+if(!user) throw new NotFound("User doesn't Existe")
+const checkPassword= user.comparePassword(password);
+if(!checkPassword){
+   throw new unauthenticatedError("invalid credentials");
+}
+const token=user.createJWT();
+res.status(StatusCodes.OK).json({success:true,token});
 }
 export {
     register,
