@@ -24,13 +24,11 @@ if(password.length<0){
 //Login Controller
 const login=async (req,res)=>{
 const {email,password}=req.body;
-if(!email || !password)res.status(StatusCodes.NOT_FOUND).json({success:false,msg:"Invalid Email or password"});
+if(!email || !password)return  res.status(StatusCodes.NOT_FOUND).json({success:false,msg:"Invalid Email or password"});
 const user=await userModel.findOne({email});
-if(!user) throw new NotFound("User doesn't Existe")
+if(!user)throw new NotFound("User doesn't Existe")
 const checkPassword= user.comparePassword(password);
-if(!checkPassword){
-   throw new unauthenticatedError("invalid credentials");
-}
+if(!checkPassword) throw new unauthenticatedError("invalid credentials");
 const token=user.createJWT();
 res.status(StatusCodes.OK).json({success:true,token});
 }

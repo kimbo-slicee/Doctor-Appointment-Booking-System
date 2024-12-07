@@ -1,4 +1,3 @@
-import {assets} from "../assets/assets.js";
 import {useContext, useState} from "react";
 import {AdminContext} from "../context/AdminContext.jsx";
 import axios from "axios";

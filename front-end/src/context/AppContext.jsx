@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import axios from 'axios';
 import { toast, Bounce } from 'react-toastify';
 
@@ -7,14 +7,12 @@ const AppContextProvider = (props) => {
     const currencySymbol = '$';
     const backEndUrl = import.meta.env.VITE_BACKEND_URL;
     const [doctors, setDoctors] = useState([]);
+    const [token,setToken]=useState(localStorage.getItem("userToken")?localStorage.getItem("userToken"):false);
 
     // Fetch all doctors
     const getAllDoctors = async () => {
         try {
             const { data } = await axios.get(`${backEndUrl}/api/v1/doctor`);
-            console.log(backEndUrl);
-            console.log(data);
-
             if (data.success) {
                 if (!data.allDoctors || data.allDoctors.length === 0) {
                     toast.info('Doctor List is Empty', {
@@ -44,7 +42,7 @@ const AppContextProvider = (props) => {
         getAllDoctors();
     }, []);
 
-    const value = { doctors, currencySymbol };
+    const value = { doctors, currencySymbol,token,setToken ,backEndUrl};
 
     return (
         <AppContext.Provider value={value}>
