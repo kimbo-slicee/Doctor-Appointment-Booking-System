@@ -3,7 +3,7 @@ import {v2 as cloudinary} from "cloudinary";
 import DoctorModel from "../models/doctor.js";
 import validator from "validator";
 import jwt from "jsonwebtoken";
-import {CustomError} from "../Error/CustomAPIError.js";
+import {CustomError} from "../Error/index.js";
 const createDoc=async (req,res)=>{
     const {name,email,password,experience,phone,degree,about,fess,speciality,available,address}=req.body
     const imageFile=req.file;

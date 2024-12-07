@@ -1,7 +1,7 @@
 import DoctorModel from "../models/doctor.js";
 import {StatusCodes} from "http-status-codes";
 
-const getAlldoctors=async(req,res)=>{
+const getAllocators=async(req, res)=>{
     // add Pagination
     const limit=Number(req.query.limit) || 5;
     const page=Number(req.query.page) || 1 ;// in FrontEnd we should increment page number when we add new Items
@@ -24,4 +24,4 @@ const changeAvailability=async (req,res)=>{
     res.status(StatusCodes.OK).json({success:true,availability:upDatedDoctorAvailability["available"]});
 }
 
-export {changeAvailability,getAlldoctors}
+export {changeAvailability,getAllocators}
