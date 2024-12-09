@@ -3,11 +3,10 @@ import React, {useContext, useState} from 'react'
 import {assets} from "../assets/assets"
 import {NavLink, useNavigate} from 'react-router-dom'
 import {AppContext} from "../context/AppContext.jsx";
-
 function NavBar() {
   const navigate =useNavigate();
   const [showMenu,setShowMenu]=useState(false);
-  const {token,setToken}=useContext(AppContext);
+  const {token,setToken,userData}=useContext(AppContext);
   const logout =()=>{
     setToken('')
     localStorage.removeItem("userToken");
@@ -35,8 +34,8 @@ function NavBar() {
       </ul>
       <ul>
         <div className="flex items-center gap-4">
-          {token ? <div className="flex items-center gap-2 cursor-pointer group relative">
-                <img src={assets.profile_pic} alt="user Profile" className="w-8 rounded-full"/>
+          {token && userData ? <div className="flex items-center gap-2 cursor-pointer group relative">
+                <img src={userData.image} alt="user Profile" className="w-8 rounded-full"/>
                 <img src={assets.dropdown_icon} alt="dropdown_icon" className="w-2.5"/>
                 <div className="absolute top-0 right-0 text-base pt-14 font-medium text-gray-600 z-20 hidden group-hover:block">
                 <div className="min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4">

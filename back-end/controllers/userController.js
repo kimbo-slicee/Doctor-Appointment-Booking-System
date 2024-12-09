@@ -46,8 +46,8 @@ const upDateUserData=async (req,res)=>{
     const {userID}=req;
     const {name,email,phone,password,address,gender,dob}=req.body;
     const fileImage=req.file;
-    if(!name || !email || !phone || !password || !address || !gender || !dob ){
-        throw new CustomError("All Files Are Require");
+    if(!name || !email || !phone || !address || !gender || !dob ){
+        throw new CustomError("All Files Are Require",StatusCodes.BAD_REQUEST);
     }
 
     const user=await userModel.findByIdAndUpdate(userID,{name,email,phone,password,address,gender,dob});
@@ -56,7 +56,7 @@ const upDateUserData=async (req,res)=>{
         const imageURL=imageUpload.secure_url;
         await userModel.findByIdAndUpdate(userID,{image:imageURL});
     }
-    res.status(StatusCodes.OK).json({success:true,message:"Profile Uploaded"})
+    res.status(StatusCodes.OK).json({success:true,message:"Profile updated"})
 }
 //  Change User Appointments API
 //  Remove User Data API

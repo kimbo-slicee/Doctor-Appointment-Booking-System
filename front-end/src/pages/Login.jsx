@@ -25,8 +25,9 @@ function Login() {
       }
       }else{
       const {data}=await axios.post(`${backEndUrl}/api/v1/user/login`,{email,password});
+      console.log(data)
         if(data.success){
-          localStorage.setItem('userToken',token);
+          localStorage.setItem('userToken',data.token);
           setToken(data.token)
           toast("login Successfully",{type:"success"})
           toast('🦄 Wow so easy!', {

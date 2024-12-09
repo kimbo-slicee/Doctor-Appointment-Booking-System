@@ -28,8 +28,11 @@ const userSchema=new mongoose.Schema({
     },
     address:{
         type:Object,
-        minLength:5,
-        maxLength:50,
+        default:{
+            line1:"",
+            line2:""
+        }
+
     },
     image:{
         type:String,
@@ -42,7 +45,7 @@ const userSchema=new mongoose.Schema({
     },
     dob:{
         type:String,
-        default:Date.now()
+        default:'00-00-0000'
     },
     role:{
         type:String,
