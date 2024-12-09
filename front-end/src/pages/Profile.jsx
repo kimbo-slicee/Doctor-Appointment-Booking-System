@@ -17,10 +17,10 @@ function Profile() {
           formData.append('gender', userData.gender || "");
           formData.append('dob', userData.dob || "");
           if (image) formData.append('image', image);
-            // Log all key-value pairs in FormData
-        for (let [key, value] of formData.entries()) {
-            console.log(key, value);
-        }
+        //     // Log all key-value pairs in FormData
+        // for (let [key, value] of formData.entries()) {
+        //     console.log(key, value);
+        // }
 
         const updateUserProfile=async () => {
       try {
@@ -91,7 +91,7 @@ function Profile() {
                            },
                        }))
                    }
-                   value={userData.address.line1}
+                   value={JSON.parse(userData.address).line1}
             />
             <br/>
             <input type="text"
@@ -105,13 +105,13 @@ function Profile() {
                            },
                        }))
                    }
-                   value={userData.address.line2}
+                   value={JSON.parse(userData.address).line2}
             />
             </p>
             : <p className="text-gray-800">
-                  {userData.address.line1}
+                  {JSON.parse(userData.address).line1}
               <br/>
-                  {userData.address.line2}
+                  {JSON.parse(userData.address).line2}
               </p>
           }
         </div>
