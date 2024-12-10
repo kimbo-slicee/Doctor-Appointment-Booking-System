@@ -79,6 +79,9 @@ doctorSchema.pre('save',async function (next){
     this.password=await bcrypt.hash(this.password,salt);
     next()
     })
+doctorSchema.methods.getAvilibality=function (){
+    return this.available;
+}
 
 const DoctorModel=mongoose.models.doctor ||  mongoose.model('doctor',doctorSchema);
 export default  DoctorModel;

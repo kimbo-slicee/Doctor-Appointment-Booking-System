@@ -76,5 +76,6 @@ userSchema.methods.getEmail=function (){
 userSchema.methods.comparePassword=async function(userPass){
     return await bcrypt.compare(userPass, this.password);
 }
+
 const userModel= mongoose.models.user||mongoose.model('user',userSchema);
 export default userModel

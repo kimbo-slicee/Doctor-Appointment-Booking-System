@@ -1,4 +1,3 @@
-// Register Controller
 import {StatusCodes} from "http-status-codes";
 import validator from "validator";
 import userModel from "../models/user.js";
@@ -6,6 +5,9 @@ import NotFound from "../Error/notFound.js";
 import unauthenticatedError from "../Error/unauthenticatedError.js";
 import {CustomError} from "../Error/index.js";
 import {v2 as cloudinary} from "cloudinary";
+import DoctorModel from "../models/doctor.js";
+import AppointmentModel from "../models/appointment.js";
+// Register Controller
 const register=async (req, res)=>{
 const {name,email,password,phone}=req.body;
 console.log(req.body);
@@ -56,16 +58,48 @@ const upDateUserData=async (req,res)=>{
         const imageURL=imageUpload.secure_url;
         await userModel.findByIdAndUpdate(userID,{image:imageURL});
     }
-    res.status(StatusCodes.OK).json({success:true,message:"Profile updated"})
+    res.status(StatusCodes.OK).json({success:true,message:"Profile updated Succfuly"})
 }
-//  Change User Appointments API
-//  Remove User Data API
-const deletUser=()=>{
+//  API to book Appointment
+const bookAppointement=async (req,res)=>{
+    const {userId,docId,slotDate,sloTime}=req.body;
+    const doctor=await DoctorModel.findById(docId);;
+    if(!doctor.getAvilibality()){
+        return res.status(StatusCodes.OK).json({success:false,message:"Sorry but this Doctor not Available for this" +
+                " moment"})
+    }
+    let slots_booked=doctor.slots_booked;
+    if(slots_booked[slotDate]){
+        if(slots_booked[slotDate].includes[sloTime]){
+            return res.status(StatusCodes.OK).json({success:false,message:"Slot Already Taken"})
+        }else {
+            slots_booked[slotDate].push(sloTime)
+        }
+    }else {
+        slots_booked[slotDate]=[];
+        slots_booked[slotDate].push(sloTime)
+    }
+    const user =await userModel.findById(userId);
+    delete doctor.slots_booked;
+    const appointment=await AppointmentModel.create({userId,docId,userData,doctor,user,amount:doctor.fees,sloTime,slotDate, date:Date.now()})
+    // create new Slots Date for Doctor
+    await doctor.findByIdAndUpdate(docId,{slots_booked})
+    res.status(StatusCodes.OK).json({success:true,message:"Appointment Has been booked succfuly",data:appointment});
+}
+//  Delte Profie
+const deletUser= async (req,res)=>{
+    const {userId}=req.user;
+    if(!userId){
+        throw new CustomError("User Id Not Found",StatusCodes.BAD_REQUEST);
+    }
+    await userModel.findByIdAndDelete(userId);
+    res.status(StatusCodes.OK).json({success:true,message:"User Account Deleted Succfuly"});
 }
 export {
     register,
     login,
     userData,
     upDateUserData,
-    deletUser
+    deletUser,
+    bookAppointement
 }

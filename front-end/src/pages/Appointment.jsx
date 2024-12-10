@@ -5,7 +5,7 @@ import {assets} from "../assets/assets.js";
 import RelatedDoctors from "../components/RelatedDoctors.jsx";
 
 function Appointment() {
-  const {doctors,currencySymbol}=useContext(AppContext);
+  const {doctors,currencySymbol,getAllDoctors,token,backEndUrl}=useContext(AppContext);
   const {docId}=useParams()
   const [docInfo,setDocInfo]=useState(null);
   const [docSlots,setDocSlots]=useState([]);
