@@ -60,34 +60,8 @@ const upDateUserData=async (req,res)=>{
     }
     res.status(StatusCodes.OK).json({success:true,message:"Profile updated Succfuly"})
 }
-//  API to book Appointment
-const bookAppointement=async (req,res)=>{
-    const {userId,docId,slotDate,sloTime}=req.body;
-    const doctor=await DoctorModel.findById(docId);;
-    if(!doctor.getAvilibality()){
-        return res.status(StatusCodes.OK).json({success:false,message:"Sorry but this Doctor not Available for this" +
-                " moment"})
-    }
-    let slots_booked=doctor.slots_booked;
-    if(slots_booked[slotDate]){
-        if(slots_booked[slotDate].includes[sloTime]){
-            return res.status(StatusCodes.OK).json({success:false,message:"Slot Already Taken"})
-        }else {
-            slots_booked[slotDate].push(sloTime)
-        }
-    }else {
-        slots_booked[slotDate]=[];
-        slots_booked[slotDate].push(sloTime)
-    }
-    const user =await userModel.findById(userId);
-    delete doctor.slots_booked;
-    const appointment=await AppointmentModel.create({userId,docId,userData,doctor,user,amount:doctor.fees,sloTime,slotDate, date:Date.now()})
-    // create new Slots Date for Doctor
-    await doctor.findByIdAndUpdate(docId,{slots_booked})
-    res.status(StatusCodes.OK).json({success:true,message:"Appointment Has been booked succfuly",data:appointment});
-}
 //  Delte Profie
-const deletUser= async (req,res)=>{
+const deleteUser= async (req, res)=>{
     const {userId}=req.user;
     if(!userId){
         throw new CustomError("User Id Not Found",StatusCodes.BAD_REQUEST);
@@ -95,11 +69,67 @@ const deletUser= async (req,res)=>{
     await userModel.findByIdAndDelete(userId);
     res.status(StatusCodes.OK).json({success:true,message:"User Account Deleted Succfuly"});
 }
+//  API to book Appointment
+const bookAppointment=async (req, res)=>{
+    const {docId,slotDate,slotTime,userData}=req.body;
+    const {userID}=req
+    console.log(slotTime);
+    if(!userID || !docId || !slotDate ||
+        !slotTime || !userData){
+        throw new CustomError("ALL Fields Required to book Appointment",StatusCodes.BAD_REQUEST)
+    }
+    const doctor=await DoctorModel.findById({_id:docId}).select("-password");
+    if(!doctor.getAvilibality()){
+        return res.status(StatusCodes.OK).json({success:false,message:"Sorry but this Doctor not Available for this" +
+                " moment"})
+    }
+    let slots_booked=doctor.slots_booked;
+    if(slots_booked[slotDate]){
+        if(slots_booked[slotDate].includes(slotTime)){
+            return res.status(StatusCodes.OK).json({success:false,message:"You can not Take Slot twos in same Day"})
+        }else {
+            slots_booked[slotDate].push(slotTime)
+        }
+    }else {
+        slots_booked[slotDate]=[];
+        slots_booked[slotDate].push(slotTime)
+    }
+    const user =await userModel.findById({_id:userID}).select("-password");
+    delete doctor.slots_booked;
+    const appointment=await AppointmentModel.create(
+        {
+            userId:userID,
+            docId,
+            userData:user,
+            docData:doctor,
+            amount:doctor.fess,
+            slotTime,
+            slotDate,
+            date:Date.now()
+        })
+    // create new Slots Date for Doctor
+    await DoctorModel.findByIdAndUpdate({_id:docId},{slots_booked})
+    res.status(StatusCodes.OK).json({success:true,message:"Appointment Has been booked succfuly",data:appointment});
+}
+// Get All User Appointment
+const appointmentsList=async (req,res)=>{
+    const {userID}=req;
+    console.log(userID);
+    const userAppointment=await AppointmentModel.find({userId:userID})// Using user ID I will fetch all appointment
+    if(!userAppointment){
+        return res.status(StatusCodes.OK).json({message:"This User Has No Appointment"})
+    }
+    res.status(StatusCodes.OK).json({message:"Appointment Loadee",data:userAppointment,count:userAppointment.length});
+    // related with this user
+
+}
 export {
     register,
     login,
     userData,
     upDateUserData,
-    deletUser,
-    bookAppointement
+    deleteUser,
+    bookAppointment,
+    appointmentsList,
+
 }

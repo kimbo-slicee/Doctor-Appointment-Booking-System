@@ -7,7 +7,9 @@ const AppContextProvider = (props) => {
     const currencySymbol = '$';
     const backEndUrl = import.meta.env.VITE_BACKEND_URL;
     const [doctors, setDoctors] = useState([]);
-    const [token,setToken]=useState(localStorage.getItem("userToken")?localStorage.getItem("userToken"):false);
+    const [token,setToken]=useState(
+        localStorage.getItem("userToken")?
+                  localStorage.getItem("userToken"):false);
     const [userData,setUserData]=useState(false);
     // Fetch all doctors
     const getAllDoctors = async () => {

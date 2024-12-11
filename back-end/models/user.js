@@ -29,10 +29,9 @@ const userSchema=new mongoose.Schema({
     address:{
         type:Object,
         default:{
-            line1:"",
-            line2:""
+            line1: "",
+            line2: ""
         }
-
     },
     image:{
         type:String,

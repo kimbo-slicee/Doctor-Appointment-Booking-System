@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react'
 import {AppContext} from "../context/AppContext.jsx";
 import axios from 'axios';
 import {useNavigate} from "react-router-dom";
-import {Bounce, toast} from "react-toastify";
+import {toast} from "react-toastify";
 
 function Login() {
   const {token,setToken ,backEndUrl}=useContext(AppContext);
@@ -18,30 +18,17 @@ function Login() {
       if(state==="Sign Up"){
       const {data}=await axios.post(`${backEndUrl}/api/v1/user/register`,{name,email,phone,password});
       if(data.success){
-        localStorage.setItem('userToken',token);
+        localStorage.setItem('userToken',data.token);
         setToken(data.token)
         toast("Account Created Successfully",{type:"success"})
 
       }
       }else{
       const {data}=await axios.post(`${backEndUrl}/api/v1/user/login`,{email,password});
-      console.log(data)
         if(data.success){
           localStorage.setItem('userToken',data.token);
           setToken(data.token)
           toast("login Successfully",{type:"success"})
-          toast('🦄 Wow so easy!', {
-            position: "top-right",
-            autoClose: 6000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
-            type:"info"
-          });
         }
       }
 

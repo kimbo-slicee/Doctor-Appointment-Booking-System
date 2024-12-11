@@ -38,8 +38,9 @@ const AddDoc=()=>{
             console.log(`${key}:${value}`)
         })
         try{
-            if(!docImage)return toast.error('Image Not Selected ');
-            const {data}=await axios.post(`${backEndUrl}/api/v1/admin`,formData,{headers:{Authorization:adminToken}});
+            if(!docImage)return toast.error('Doctor Image Require');
+            const {data}=await axios.post(`${backEndUrl}/api/v1/admin`,formData,{headers: {Authorization: adminToken}});
+            console.log(data);
             if(data.success) toast.success("Doctor Added Successfully")
         }catch (error){
             console.log(error);
@@ -84,6 +85,13 @@ const AddDoc=()=>{
                              <option value="1 Year">1 Year</option>
                              <option value="2 Year">2 Year</option>
                              <option value="3 Year">3 Year</option>
+                             <option value="3 Year">4 Year</option>
+                             <option value="3 Year">5 Year</option>
+                             <option value="3 Year">6 Year</option>
+                             <option value="3 Year">7 Year</option>
+                             <option value="3 Year">8 Year</option>
+                             <option value="3 Year">9 Year</option>
+                             <option value="3 Year">10 Year</option>
                          </select>
                      </div>
                      <div  className="flex-1 flex flex-col gap-1" >
@@ -97,7 +105,7 @@ const AddDoc=()=>{
                      <div className="flex-1 flex flex-col gap-1">
                          <p>Speciality</p>
                          <select onChange={e => setSpeciality(e.target.value)} name="Speciality" value={speciality}
-                                 className="border rounded px-3 py-3">
+                             className="border rounded px-3 py-3">
                              <option value='General Physician'>General Physician</option>
                              <option value='Gynecologist'>Gynecologist</option>
                              <option value='Dermatologist'>Dermatologist</option>

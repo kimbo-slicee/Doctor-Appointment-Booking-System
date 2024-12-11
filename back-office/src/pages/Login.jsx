@@ -13,8 +13,8 @@ const Login=()=>{
             if(state==="Admin"){
                 const {data}=await axios.post(`${backEndUrl}/api/v1/admin/login`,{email,password})
                 if(data.success) {
-                    localStorage.setItem('adminToken',data.token);
-                    setAdminToken(data.token);
+                    localStorage.setItem('adminToken',`Bearer ${data.token}`);
+                    setAdminToken(`Bearer ${data.token}`);
                 }
             }
         }catch (error){

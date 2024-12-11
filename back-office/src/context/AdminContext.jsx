@@ -9,7 +9,7 @@ const AdminContextProvider=(props)=>{
     const [doctors,setDoctors]=useState([]);
     const fetchAllDoctors=async ()=>{
         try{
-            const {data}=await axios.get(`${backEndUrl}/api/v1/admin`,{headers:{Authorization:adminToken}});
+            const {data}=await axios.get(`${backEndUrl}/api/v1/admin`,{headers: {Authorization: adminToken}});
             if(data.success){
                 setDoctors(data['data'])
                 console.log(data['data']);
@@ -23,7 +23,7 @@ const AdminContextProvider=(props)=>{
     }
     const changeAvailability=async (docId)=>{
         try{
-            const {data}=await axios.patch(`${backEndUrl}/api/v1/admin/doctor/${docId}`,{},{headers:{Authorization:adminToken}});
+            const {data}=await axios.patch(`${backEndUrl}/api/v1/admin/doctor/${docId}`,{},{headers: {Authorization: adminToken}});
             if(data.success){
                     await fetchAllDoctors();
                 data.availability?toast.success("Doctor now available"):toast.warning("Doctor now not available");

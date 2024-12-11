@@ -13,7 +13,7 @@ function Profile() {
           formData.append('name', userData.name || ""); // Default to empty string if undefined
           formData.append('email', userData.email || "");
           formData.append('phone', userData.phone || "");
-          formData.append('address', JSON.stringify(userData.address || {}));
+          formData.append('address', userData.address );
           formData.append('gender', userData.gender || "");
           formData.append('dob', userData.dob || "");
           if (image) formData.append('image', image);
@@ -91,7 +91,7 @@ function Profile() {
                            },
                        }))
                    }
-                   value={JSON.parse(userData.address).line1}
+                   value={userData.address.line1}
             />
             <br/>
             <input type="text"
@@ -105,19 +105,20 @@ function Profile() {
                            },
                        }))
                    }
-                   value={JSON.parse(userData.address).line2}
+                   value={userData.address.line2}
             />
             </p>
             : <p className="text-gray-800">
-                  {JSON.parse(userData.address).line1}
+                  {userData.address.line1}
+
               <br/>
-                  {JSON.parse(userData.address).line2}
+                  {userData.address.line2}
               </p>
           }
         </div>
       </div>
       <div>
-        <p className="text-primary underline mt-3 ">BASIC INFORMATION </p>
+        <p className="text-primary underline mt-3 ">BASIC INFORMATION</p>
         <div className="grid grid-cols-[1fr_3fr] gray-y-2 mt-3 text-neutral-800">
           <p className="font-medium">Gender:</p>
           {isEdite

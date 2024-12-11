@@ -28,7 +28,7 @@ const appointmentSchema=new mongoose.Schema({
         type:Number,
         required:[true,"Appointment Amount is Missing"]
     },
-    data:{
+    date:{
     type:Number,
     required:[true,"Appointment Date is Missing"]
 
