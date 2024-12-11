@@ -29,7 +29,7 @@ function Appointment() {
           // settings end time of the date with index
           let endTime =new Date();
           endTime.setDate(today.getDate()+i);
-          endTime.setHours(16,0,0 ,0 )// get The time of the Day in 24h format
+          endTime.setHours(24,0,0 ,0 )// get The time of the Day in 24h format
           // setting hours
           if(today.getDate()===currentDate.getDate()){
               // check day is today
@@ -46,14 +46,13 @@ function Appointment() {
          let month=currentDate.getMonth() + 1;
          let year=currentDate.getFullYear()
          let slotDate=`${day}_${month}_${year}`;
-         const isSlotAvailable=docInfo.slots_booked[slotDate] && docInfo.slots_booked[slotDate].includes(formattedTime)?false:true
-         if(isSlotAvailable){
+         const isSlotAvailable=!(docInfo.slots_booked[slotDate] && docInfo.slots_booked[slotDate].includes(formattedTime))
+         if(isSlotAvailable){}
              // add slots to array
              timeSlots.push({
                  dateTime:new Date(currentDate),
                  time:formattedTime,
              })
-         }
          // Increment time by 30 min
              currentDate.setMinutes(currentDate.getMinutes()+30 );
          }
@@ -81,7 +80,7 @@ function Appointment() {
             console.log(data);
             if(data.success){
                 getAllDoctors();
-                navigate('/myAppointments');
+                // navigate('/myAppointments');
                 toast(data.message,{type:"success"});
             }else{
                 console.log(data.message);

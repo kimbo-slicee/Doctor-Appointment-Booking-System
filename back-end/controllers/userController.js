@@ -114,12 +114,11 @@ const bookAppointment=async (req, res)=>{
 // Get All User Appointment
 const appointmentsList=async (req,res)=>{
     const {userID}=req;
-    console.log(userID);
     const userAppointment=await AppointmentModel.find({userId:userID})// Using user ID I will fetch all appointment
     if(!userAppointment){
         return res.status(StatusCodes.OK).json({message:"This User Has No Appointment"})
     }
-    res.status(StatusCodes.OK).json({message:"Appointment Loadee",data:userAppointment,count:userAppointment.length});
+    res.status(StatusCodes.OK).json({success:true,data:userAppointment,count:userAppointment.length});
     // related with this user
 
 }

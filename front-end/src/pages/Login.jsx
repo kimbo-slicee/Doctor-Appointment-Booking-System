@@ -83,7 +83,7 @@ function Login() {
           <button className="bg-primary text-white w-full py-2 rounded-md text-base" type="submit"
                   onSubmit={handelSubmit}>
             {state==="Sign Up"?"create account":"Login"}</button>
-          {state==="Sign Up" ?
+            {state==="Sign Up" ?
               <p> Already Have account ?
                <span
                    onClick={()=>setState('Login')}
