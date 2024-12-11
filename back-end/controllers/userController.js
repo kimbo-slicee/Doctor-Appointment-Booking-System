@@ -7,6 +7,7 @@ import {CustomError} from "../Error/index.js";
 import {v2 as cloudinary} from "cloudinary";
 import DoctorModel from "../models/doctor.js";
 import AppointmentModel from "../models/appointment.js";
+import UnauthenticatedError from "../Error/unauthenticatedError.js";
 // Register Controller
 const register=async (req, res)=>{
 const {name,email,password,phone}=req.body;
@@ -122,6 +123,19 @@ const appointmentsList=async (req,res)=>{
     // related with this user
 
 }
+// Cancel Appointment
+const cancelAppointment=async (req,res)=>{
+    const {userID}=req;
+    const {appointmentId}=req.body;
+    const updatedAppointment= await AppointmentModel.findByIdAndUpdate({_id:appointmentId, userId:userID},{cancelled:true},{new:true,runValidators:true})
+    const {docId,slotDate,slotTime}=updatedAppointment;
+    const doctorData=await DoctorModel.findById(docId);
+    let slots_booked=doctorData.slots_booked;
+    slots_booked[slotDate]=slots_booked[slotDate].filter(e=>e!==slotTime)// remove Appointment SlotTime From Doctor
+    // Slots_Booked
+    res.status(StatusCodes.OK).json({success:true,message:"Appointment Canceled"})
+
+}
 export {
     register,
     login,
@@ -130,5 +144,6 @@ export {
     deleteUser,
     bookAppointment,
     appointmentsList,
+    cancelAppointment
 
 }

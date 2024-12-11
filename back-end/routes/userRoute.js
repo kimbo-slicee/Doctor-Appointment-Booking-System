@@ -6,7 +6,8 @@ import {
     upDateUserData,
     deleteUser,
     bookAppointment,
-    appointmentsList
+    appointmentsList,
+    cancelAppointment
 } from "../controllers/userController.js";
 import userAuth from "../middlewares/userAuth.js";
 import upload from "../middlewares/multer.js";
@@ -16,6 +17,9 @@ userRoute.route('/login').post(login);
 userRoute.route('/profile').get(userAuth,userData)
     .delete(userAuth,deleteUser)
     .patch(upload.single("image"),userAuth,upDateUserData);
-userRoute.route('/appointment').post(userAuth,bookAppointment).get(userAuth,appointmentsList)
+userRoute.route('/appointment')
+    .post(userAuth,bookAppointment)
+    .get(userAuth,appointmentsList)
+    .patch(userAuth,cancelAppointment)
 
 export default userRoute
