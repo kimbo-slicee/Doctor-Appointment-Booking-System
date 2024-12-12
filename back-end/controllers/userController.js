@@ -136,6 +136,10 @@ const cancelAppointment=async (req,res)=>{
     res.status(StatusCodes.OK).json({success:true,message:"Appointment Canceled"})
 
 }
+// User Oline Payment
+const onlinePayment=async (res,req)=>{
+
+}
 export {
     register,
     login,

@@ -80,7 +80,7 @@ function Appointment() {
             console.log(data);
             if(data.success){
                 getAllDoctors();
-                // navigate('/myAppointments');
+                navigate('/myAppointments');
                 toast(data.message,{type:"success"});
             }else{
                 console.log(data.message);

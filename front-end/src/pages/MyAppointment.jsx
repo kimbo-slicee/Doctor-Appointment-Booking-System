@@ -1,10 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {AppContext} from "../context/AppContext.jsx";
 import axios from "axios";
-import {toast} from "react-toastify";
+import {Bounce, toast} from "react-toastify";
 
 function MyAppointments() {
-    const {token,backEndUrl}=useContext(AppContext);
+    const {token,backEndUrl,getAllDoctors}=useContext(AppContext);
     const [appointments,setAppointments]=useState([]);
     const months=[" ","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","sep","Oct","Nov","Dec"];
     const slotDateFormat=(slotDate)=>{
@@ -15,7 +15,7 @@ function MyAppointments() {
         try{
         const {data}= await axios.get(`${backEndUrl}/api/v1/user/appointment`,{headers:{Authorization:`Bearer ${token}`}});
         if(data.success){
-            setAppointments(data["data"].reverse())
+            setAppointments(data["data"].reverse());
         }
         }catch (error){
             console.error(error)
@@ -27,7 +27,18 @@ function MyAppointments() {
         try{
             const {data}=await axios.patch(`${backEndUrl}/api/v1/user/appointment`,{appointmentId},{headers:{Authorization:`Bearer ${token}`}});
             getUserAppointment();
-            console.table(data);
+            toast('Appointment Has been canceled take Another Appointment', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                type:"info",
+                transition: Bounce,
+            });
 
         }catch (error){
             console.error(error)
@@ -58,8 +69,9 @@ function MyAppointments() {
               </div>
                 <div></div>
                 <div className="flex flex-col gap-2 justify-end">
-                    <button className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-500" >Pay Online</button>
-                    <button onClick={()=>cancelAppointment(item._id)} className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-500">Cancel Appointment </button>
+                    {!item.cancelled &&  <button className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-500" >Pay Online</button>}
+                    {!item.cancelled && <button onClick={()=>cancelAppointment(item._id)} className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-500">Cancel Appointment </button>}
+                    {item.cancelled && <button className="text-sm text-white bg-red-600 text-center sm:min-w-48 p-3 border rounded"> Appointment Has Ben Canceled</button> }
                 </div>
             </div>
         ))}
