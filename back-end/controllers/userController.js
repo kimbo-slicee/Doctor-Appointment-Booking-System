@@ -7,7 +7,10 @@ import {CustomError} from "../Error/index.js";
 import {v2 as cloudinary} from "cloudinary";
 import DoctorModel from "../models/doctor.js";
 import AppointmentModel from "../models/appointment.js";
-import UnauthenticatedError from "../Error/unauthenticatedError.js";
+import paypal from "@paypal/checkout-server-sdk";
+import {getAccessToken} from "../config/paypal.js";
+import axios from "axios";
+
 // Register Controller
 const register=async (req, res)=>{
 const {name,email,password,phone}=req.body;
@@ -136,10 +139,54 @@ const cancelAppointment=async (req,res)=>{
     res.status(StatusCodes.OK).json({success:true,message:"Appointment Canceled"})
 
 }
-// User Oline Payment
-const onlinePayment=async (res,req)=>{
 
-}
+// User Oline Payment
+const onlinePayment = async (req, res) => {
+    const { userID } = req;
+    const { appointmentId } = req.body;
+
+    try {
+        const accessToken = await getAccessToken();
+
+        const response = await axios({
+            url: `${process.env.PAYPAL_BASE_URL}/v2/checkout/orders`, // Ensure the URL is correct
+            method: "post",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+            },
+            data: {
+                intent: "CAPTURE",
+                purchase_units: [
+                    {
+                        description: "Book Appointment from Doctor", // Description of the purchase
+                        amount: {
+                            currency_code: "USD",
+                            value: "100.00",
+                            breakdown: {
+                                item_total: {
+                                    currency_code: "USD",
+                                    value: "100.00",
+                                },
+                            },
+                        },
+                    },
+                ],
+                application_context: {
+                    return_url: `${process.env.FRONT_END_URL}/myAppointments`,
+                    cancel_url: `${process.env.FRONT_END_URL}/myAppointments`,
+                    user_action:"CONTINUE"
+                },
+            },
+        });
+
+        res.status(200).json({ success: true, data: response.data });
+    } catch (error) {
+        console.error("Error creating PayPal order:", error.response?.data || error.message);
+        res.status(500).json({ success: false, message: "Failed to create PayPal order" });
+    }
+};
+
 export {
     register,
     login,
@@ -148,6 +195,6 @@ export {
     deleteUser,
     bookAppointment,
     appointmentsList,
-    cancelAppointment
-
+    cancelAppointment,
+    onlinePayment
 }

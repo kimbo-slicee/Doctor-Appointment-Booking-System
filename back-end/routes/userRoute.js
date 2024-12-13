@@ -7,7 +7,8 @@ import {
     deleteUser,
     bookAppointment,
     appointmentsList,
-    cancelAppointment
+    cancelAppointment,
+    onlinePayment
 } from "../controllers/userController.js";
 import userAuth from "../middlewares/userAuth.js";
 import upload from "../middlewares/multer.js";
@@ -21,5 +22,6 @@ userRoute.route('/appointment')
     .post(userAuth,bookAppointment)
     .get(userAuth,appointmentsList)
     .patch(userAuth,cancelAppointment)
+userRoute.route('/appointment/payment').post(userAuth,onlinePayment)
 
 export default userRoute
