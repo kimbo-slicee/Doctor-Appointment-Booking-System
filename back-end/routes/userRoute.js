@@ -8,7 +8,7 @@ import {
     bookAppointment,
     appointmentsList,
     cancelAppointment,
-    onlinePayment
+    onlinePayment, capturePayment
 } from "../controllers/userController.js";
 import userAuth from "../middlewares/userAuth.js";
 import upload from "../middlewares/multer.js";
@@ -22,6 +22,7 @@ userRoute.route('/appointment')
     .post(userAuth,bookAppointment)
     .get(userAuth,appointmentsList)
     .patch(userAuth,cancelAppointment)
-userRoute.route('/appointment/payment').post(userAuth,onlinePayment)
+userRoute.route('/appointment/create-payment').post(userAuth,onlinePayment)
+userRoute.route('/appointment/capture-payment/:orderId').post(userAuth,capturePayment)
 
 export default userRoute

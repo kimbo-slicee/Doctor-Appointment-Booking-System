@@ -7,9 +7,9 @@ import {CustomError} from "../Error/index.js";
 import {v2 as cloudinary} from "cloudinary";
 import DoctorModel from "../models/doctor.js";
 import AppointmentModel from "../models/appointment.js";
-import paypal from "@paypal/checkout-server-sdk";
 import {getAccessToken} from "../config/paypal.js";
 import axios from "axios";
+import {response} from "express";
 
 // Register Controller
 const register=async (req, res)=>{
@@ -142,9 +142,13 @@ const cancelAppointment=async (req,res)=>{
 
 // User Oline Payment
 const onlinePayment = async (req, res) => {
-    const { userID } = req;
+    const {userID}=req;
+    const user=await userModel.findById(userID).select(["-password","-image"]);
     const { appointmentId } = req.body;
-
+    const appointment=await AppointmentModel.findById({_id:appointmentId});
+    const {
+        docData:{fess}
+    }=appointment;
     try {
         const accessToken = await getAccessToken();
 
@@ -159,31 +163,104 @@ const onlinePayment = async (req, res) => {
                 intent: "CAPTURE",
                 purchase_units: [
                     {
-                        description: "Book Appointment from Doctor", // Description of the purchase
+                        reference_id:appointmentId,
+                        description: `Book Appointment Doctor ${appointment.docData["name"]}`,
                         amount: {
-                            currency_code: "USD",
-                            value: "100.00",
+                            currency_code: process.env.CURRENCY,
+                            value: fess,
                             breakdown: {
                                 item_total: {
-                                    currency_code: "USD",
-                                    value: "100.00",
+                                    currency_code: process.env.CURRENCY,
+                                    value: fess,
                                 },
                             },
                         },
                     },
                 ],
-                application_context: {
-                    return_url: `${process.env.FRONT_END_URL}/myAppointments`,
-                    cancel_url: `${process.env.FRONT_END_URL}/myAppointments`,
-                    user_action:"CONTINUE"
-                },
-            },
+                shipping: {
+                    name: {
+                          full_name: user.name,
+                    },
+                    },
+                    address: {
+                            address_line_1: user.address.line1,
+                            address_line_2: user.address.line2,
+                            admin_area_1:JSON.parse(appointment.docData.address).line1,
+                            admin_area_2:JSON.parse(appointment.docData.address).line2,
+                        },
+                        payer: {
+                            name: {
+                                given_name: user.name,
+                            },
+                            email_address: user.email,
+                        },
+                        application_context: {
+                            return_url: `${process.env.FRONT_END_URL}/myAppointments`,
+                            cancel_url: `${process.env.FRONT_END_URL}/myAppointments`,
+                            user_action: "CONTINUE",
+                            brand_name: "PresCripto"
+                        },
+                    },
         });
-
-        res.status(200).json({ success: true, data: response.data });
+        const approvalLink = response.data.links.find((link) => link.rel === "approve").href;
+        const {data:{id}}=response
+        res.status(200).json({ success: true, approval_url: approvalLink , orderId:id});
     } catch (error) {
         console.error("Error creating PayPal order:", error.response?.data || error.message);
-        res.status(500).json({ success: false, message: "Failed to create PayPal order" });
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ success: false, message: "Failed to create PayPal order" });
+    }
+};
+// capturePayment
+const capturePayment = async (req, res) => {
+    const {userId}=req;
+    const { orderId } = req.params;
+    try {
+        // Get PayPal access token
+        const auth = Buffer.from(`${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`).toString("base64");
+        const tokenResponse = await axios.post("https://api-m.sandbox.paypal.com/v1/oauth2/token",
+            "grant_type=client_credentials", {
+            headers: {
+                Authorization: `Basic ${auth}`,
+            },
+        });
+        const accessToken = tokenResponse.data.access_token;
+
+        // Capture the payment
+        const captureResponse = await axios.post(
+            `https://api-m.sandbox.paypal.com/v2/checkout/orders/${orderId}/capture`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
+
+        // Check payment status
+        const paymentStatus = captureResponse.data.status;
+        if (paymentStatus === "COMPLETED") {
+            const [a]=captureResponse.data.purchase_units;
+            const {reference_id}=a
+            await AppointmentModel.findByIdAndUpdate(reference_id,{payment:true})
+            // Payment was successful
+            return res.status(StatusCodes.OK).json({
+                success: true,
+                message: "Payment captured successfully.",
+                data: captureResponse.data,
+            });
+        } else {
+            return res.status(StatusCodes.OK).json({
+                success: false,
+                message: "Payment not completed.",
+            });
+        }
+    } catch (error) {
+        console.error("Error capturing payment:", error.response?.data || error.message);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Failed to capture payment.",
+            error: error.response?.data || error.message,
+        });
     }
 };
 
@@ -196,5 +273,6 @@ export {
     bookAppointment,
     appointmentsList,
     cancelAppointment,
-    onlinePayment
+    onlinePayment,
+    capturePayment
 }
