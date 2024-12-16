@@ -1,8 +1,29 @@
 import {useContext, useEffect} from "react";
 import {AdminContext} from "../../context/AdminContext.jsx";
+import {AppContext} from "../../context/AppContext.jsx";
+import {assets} from "../../assets/assets.js";
+import axios from "axios";
+import {toast} from "react-toastify";
 
 const Appointments =()=>{
-    const{adminToken,appointmentList,appointments,setAppointments}=useContext(AdminContext);
+    const{adminToken,appointmentList,appointments,setAppointments,backEndUrl}=useContext(AdminContext);
+    const {calcAge,slotDateFormat,currency}=useContext(AppContext);
+    const handelClick=async (appointmentId)=>{
+        try{
+            const {data}=await axios({
+            url:`${backEndUrl}/api/v1/admin/appointments`,
+            method:"patch",
+            headers:{Authorization:adminToken},
+            data:{appointmentId}
+        })
+            if(data.success){
+                toast(data.message,{type:"success"});
+               appointmentList();
+            }
+        }catch (error){
+                toast(error.response.message,{type:"success"});
+        }
+    }
     useEffect(() => {
         if(adminToken) appointmentList();
     }, [adminToken]);
@@ -10,22 +31,34 @@ const Appointments =()=>{
         <div className="w-full max-w-6xl m-5 ">
             <p className="mb-3 text-lg font-light text-center uppercase text-zinc-950 ">All Appointments</p>
             <div className="bg-white border rounded text-sm max-h-[80vh]  overflow-y-scroll shadow-custom-light">
-                <div className="hidden font-medium bg-primary text-white sm:grid sm:grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr] grid-flow-col py-3 px-6 ">
+                <div className="hidden font-medium bg-primary text-white sm:grid sm:grid-cols-[0.5fr_1fr_1fr_2fr_2fr_1fr_1fr] grid-flow-col py-3 px-6 ">
                     <p>#</p>
                     <p>Patient</p>
                     <p>Age</p>
                     <p>Date & Time</p>
+                    <p>Doctors</p>
                     <p>Fees</p>
                     <p>Actions</p>
                     <p></p>
                 </div>
             {appointments.map((appointment, index) => (
                 <div key={index}
-                     className="flex flex-wrap justify-between max-sm:gap-2 sm:grid sm:grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr] items-center text-gray-500 py-3 px-6 border-b hover:bg-zinc-200 transition-all duration-500">
+                     className="flex flex-wrap justify-between max-sm:gap-2 sm:grid sm:grid-cols-[0.5fr_1fr_1fr_2fr_2fr_1fr_1fr] items-center text-gray-500 py-3 px-6 border-b hover:bg-zinc-200 transition-all duration-500">
                     <p className="max-sm:hidden">{index+1}</p>
                     <div className="flex items-center gap-2">
-                        <img className="rounded-full w-8"  src={appointment.userData.image} alt="Profile Image"/>
+                        <img className="rounded-full w-10"  src={appointment.userData.image} alt="Profile Image"/>
                     </div>
+                    <p className="max-sm:hidden ">{calcAge(appointment.userData.dob)}</p>
+                    <p>{slotDateFormat(appointment.slotDate)} | {appointment.slotTime}</p>
+                    <div className="flex items-center gap-2">
+                        <img className="w-8 rounded-full bg-primary" src={appointment.docData.image} alt="Doctor Image"/>{appointment.docData.name}
+                    </div>
+                    <p>{currency} {appointment.amount}</p>
+                    {appointment.cancelled?<p className="text-red-400 text-xs font-medium">Cancelled</p>:
+                        <img src={assets.cancel_icon}
+                             className="w-10 cursor-pointer
+                              transition-all
+                             duration-500" alt="Canell button" onClick={()=>handelClick(appointment._id)}/>}
                 </div>
             ))}
             </div>

@@ -87,9 +87,19 @@ const getAllAppointments=async (req,res)=>{
              ,amount:appointments.length
          });
 }
+// Cancel Appointment
+const cancelAppointment=async (req, res)=>{
+const {appointmentId}=req.body;
+if(!appointmentId){
+    throw new CustomError("Appointment Id Not Found",StatusCodes.BAD_REQUEST)
+}
+const updatedAppointment=await AppointmentModel.findByIdAndUpdate(appointmentId,{cancelled:true},{new:true,runValidators:true})
+    res.status(StatusCodes.OK).json({success:true,data:updatedAppointment,message:"Appointment Canceled"})
+}
 export {
     createDoc,
     login,
     getAllDoctors,
-    getAllAppointments
+    getAllAppointments,
+    cancelAppointment
 }
