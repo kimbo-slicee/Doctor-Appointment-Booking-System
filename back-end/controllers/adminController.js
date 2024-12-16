@@ -4,6 +4,7 @@ import DoctorModel from "../models/doctor.js";
 import validator from "validator";
 import jwt from "jsonwebtoken";
 import {CustomError} from "../Error/index.js";
+import AppointmentModel from "../models/appointment.js";
 const createDoc=async (req,res)=>{
     const {name,email,password,experience,phone,degree,about,fess,speciality,available,address}=req.body
     const imageFile=req.file;
@@ -59,7 +60,7 @@ const createDoc=async (req,res)=>{
     }
 
  }
- // add Controller to Fetch all doctors
+ // Get All Doctors
 const getAllDoctors=async (req, res)=>{
     try{
     const doctors=await DoctorModel.find({}).select('-password')
@@ -73,8 +74,22 @@ const getAllDoctors=async (req, res)=>{
     }
 
 }
+// Get All Appointments
+const getAllAppointments=async (req,res)=>{
+    const appointments=await AppointmentModel.find({});
+    if(!appointments){
+        throw new CustomError("Appointments Doesn't Existe",StatusCodes.BAD_REQUEST);
+    }
+     res.status(StatusCodes.OK).json(
+         {
+              success:true
+             ,data: appointments
+             ,amount:appointments.length
+         });
+}
 export {
     createDoc,
     login,
-    getAllDoctors
+    getAllDoctors,
+    getAllAppointments
 }
