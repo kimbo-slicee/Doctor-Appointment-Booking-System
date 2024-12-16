@@ -6,24 +6,8 @@ import axios from "axios";
 import {toast} from "react-toastify";
 
 const Appointments =()=>{
-    const{adminToken,appointmentList,appointments,setAppointments,backEndUrl}=useContext(AdminContext);
+    const{adminToken,appointmentList,appointments,setAppointments,cancelAppointment}=useContext(AdminContext);
     const {calcAge,slotDateFormat,currency}=useContext(AppContext);
-    const handelClick=async (appointmentId)=>{
-        try{
-            const {data}=await axios({
-            url:`${backEndUrl}/api/v1/admin/appointments`,
-            method:"patch",
-            headers:{Authorization:adminToken},
-            data:{appointmentId}
-        })
-            if(data.success){
-                toast(data.message,{type:"success"});
-               appointmentList();
-            }
-        }catch (error){
-                toast(error.response.message,{type:"success"});
-        }
-    }
     useEffect(() => {
         if(adminToken) appointmentList();
     }, [adminToken]);
@@ -58,7 +42,7 @@ const Appointments =()=>{
                         <img src={assets.cancel_icon}
                              className="w-10 cursor-pointer
                               transition-all
-                             duration-500" alt="Canell button" onClick={()=>handelClick(appointment._id)}/>}
+                             duration-500" alt="Canell button" onClick={()=>cancelAppointment(appointment._id)}/>}
                 </div>
             ))}
             </div>

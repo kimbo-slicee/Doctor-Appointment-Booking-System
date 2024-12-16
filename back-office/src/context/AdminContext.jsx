@@ -8,7 +8,8 @@ const AdminContextProvider=(props)=>{
     const [adminToken,setAdminToken]=useState(localStorage.getItem('adminToken')?localStorage.getItem('adminToken'):'');
     const backEndUrl=import.meta.env.VITE_BACKEND_URL;
     const [doctors,setDoctors]=useState([]);
-    const [appointments,setAppointments]=useState([])
+    const [appointments,setAppointments]=useState([]);
+    const [dashData,setDashData]=useState(false);
     const fetchAllDoctors=async ()=>{
         try{
             const {data}=await axios.get(`${backEndUrl}/api/v1/admin`,{headers: {Authorization: adminToken}});
@@ -53,8 +54,47 @@ const AdminContextProvider=(props)=>{
             toast.error(error.message);
         }
     }
+    const cancelAppointment=async (appointmentId)=>{
+        try{
+            const {data}=await axios({
+                url:`${backEndUrl}/api/v1/admin/appointments`,
+                method:"patch",
+                headers:{Authorization:adminToken},
+                data:{appointmentId}
+            })
+            if(data.success){
+                toast(data.message,{type:"success"});
+                appointmentList();
+            }
+        }catch (error){
+            toast(error.response.message,{type:"success"});
+        }
+    }
+
+    // Get Admin DashBoard Data form Backend API
+    const getDashBoardData=async ()=>{
+        try{
+            const {data}=await axios({
+                url:`${backEndUrl}/api/v1/admin/dashboard`,
+                method:"get",
+                headers:{Authorization:adminToken}
+            })
+            if(data.success){
+                setDashData(data);
+                console.log(data);
+            }else {
+                toast(data.message,{type:"error"})
+            }
+        }catch (e) {
+            console.log(e)
+        }
+
+    }
     const value={
-        adminToken,setAdminToken,backEndUrl,fetchAllDoctors,doctors, changeAvailability,appointmentList,appointments,setAppointments
+        adminToken,setAdminToken,backEndUrl,
+        fetchAllDoctors,doctors,
+        changeAvailability,appointmentList,
+        appointments,setAppointments,dashData,setDashData, getDashBoardData,cancelAppointment
     }
  return(
      <AdminContext.Provider value={value}>

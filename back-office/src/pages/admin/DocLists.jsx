@@ -14,8 +14,11 @@ const DocLists=()=>{
             <div className="w-full flex flex-wrap gap-4 pt-5 gap-y-6 ">
                 {
                     doctors.map((doctor,index)=>(
-                        <div key={index} className="border border-indigo-200 rounded-xl max-w-30 overflow-hidden group">
-                            <img src={doctor.image} alt="Doctor image" className="bg-indigo-50 hover:bg-primary transition-all duration-500"/>
+                        <div key={index}
+                             className="border border-blue-200 rounded-xl overflow-hidden cursor-pointer
+                         hover:translate-y-[-10px] transition-all
+                         duration-500">
+                            <img src={doctor.image} alt="Doctor image" className="bg-indigo-50 hover:bg-primary transition-all duration-500 "/>
                             <div className="p-4">
                                 <p className="text-neutral-800 text-lg font-medium">{doctor.name}</p>
                                 <p className="text-zinc-600 text-sm font-semibold">{doctor.speciality}

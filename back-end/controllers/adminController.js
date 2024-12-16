@@ -5,6 +5,7 @@ import validator from "validator";
 import jwt from "jsonwebtoken";
 import {CustomError} from "../Error/index.js";
 import AppointmentModel from "../models/appointment.js";
+import userModel from "../models/user.js";
 const createDoc=async (req,res)=>{
     const {name,email,password,experience,phone,degree,about,fess,speciality,available,address}=req.body
     const imageFile=req.file;
@@ -96,10 +97,28 @@ if(!appointmentId){
 const updatedAppointment=await AppointmentModel.findByIdAndUpdate(appointmentId,{cancelled:true},{new:true,runValidators:true})
     res.status(StatusCodes.OK).json({success:true,data:updatedAppointment,message:"Appointment Canceled"})
 }
+// Get All Data for Admin DashBoard
+const adminDashBoard=async (req,res)=>{
+    // get All Data From
+    const doctors=await DoctorModel.find({});
+    const users=await userModel.find({});
+    const appointments=await AppointmentModel.find({});
+    // add Pagination
+    // Create response Data Object
+    const data={
+            doctors:doctors.length,
+            appointments:appointments.length,
+            patients:users.length,
+            appointmentsList:appointments
+    }
+    res.status(StatusCodes.OK).json({success:true,data});
+
+}
 export {
     createDoc,
     login,
     getAllDoctors,
     getAllAppointments,
-    cancelAppointment
+    cancelAppointment,
+    adminDashBoard
 }
