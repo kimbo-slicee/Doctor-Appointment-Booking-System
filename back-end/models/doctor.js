@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 const doctorSchema=new mongoose.Schema({
     name:{
         type:String,
@@ -72,16 +73,27 @@ const doctorSchema=new mongoose.Schema({
         default:{}
 
     },
+    role:{
+        type:String,
+        default:"Doctor"
+    }
 
 },{timestamps:true,minimize:false});
+doctorSchema.methods.getAvilibality=function (){
+    return this.available;
+}
 doctorSchema.pre('save',async function (next){
     const salt=await bcrypt.genSalt(10);
     this.password=await bcrypt.hash(this.password,salt);
     next()
     })
-doctorSchema.methods.getAvilibality=function (){
-    return this.available;
+doctorSchema.methods.comparePassword=async function(userPass){
+    return await bcrypt.compare(userPass, this.password);
 }
+doctorSchema.methods.createJWT=function (){
+    return jwt.sign({doctorId:this._id,email:this.email,role:this.role},
+        process.env.JWT_SECRET,{expiresIn:process.env.JWT_LIFETIMIE})
+};
 
 const DoctorModel=mongoose.models.doctor ||  mongoose.model('doctor',doctorSchema);
 export default  DoctorModel;

@@ -70,7 +70,6 @@ const AdminContextProvider=(props)=>{
             toast(error.response.message,{type:"success"});
         }
     }
-
     // Get Admin DashBoard Data form Backend API
     const getDashBoardData=async ()=>{
         try{

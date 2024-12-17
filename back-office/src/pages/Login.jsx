@@ -2,22 +2,42 @@ import {useContext, useState} from "react";
 import {AdminContext} from "../context/AdminContext.jsx";
 import axios from "axios";
 import {Bounce, toast} from "react-toastify";
+import Spinner from "../components/Spinner.jsx";
+import DoctorContext from "../context/DoctorContext.jsx";
 const Login=()=>{
     const [state,setState]=useState("Admin");
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('');
     const {setAdminToken,backEndUrl}=useContext(AdminContext)
+    const {doctorToken,setDoctorToken,backendUrl}=useContext(DoctorContext)
+    const [loading,setLoading]=useState(false)
     const submitHandler=async (e)=>{
         e.preventDefault();
+        setLoading(true)
         try{
             if(state==="Admin"){
                 const {data}=await axios.post(`${backEndUrl}/api/v1/admin/login`,{email,password})
                 if(data.success) {
                     localStorage.setItem('adminToken',`Bearer ${data.token}`);
                     setAdminToken(`Bearer ${data.token}`);
+                    setLoading(false);
+                }else {
+                    toast(data.message,{type:"error"})
+                    setLoading(false);
+                }
+            }else{
+                const {data}=await axios.post(`${backEndUrl}/api/v1/doctor/login`,{email,password})
+                if(data.success){
+                    console.log(data)
+                    setLoading(false);
+                    // setAdminToken(data.token)
+                    toast("Login Successful",{type:"success"})
+                }else {
+                    console.log(data)
                 }
             }
         }catch (error){
+            console.log(error)
             toast.error(`${error.message}`, {
                 position: "top-center",
                 autoClose: true,
@@ -31,7 +51,7 @@ const Login=()=>{
             });
         }
     }
-    return(
+    return loading? (<Spinner loading={loading}/>):(
         <form onSubmit={submitHandler} className="min-h-[80vh] flex items-center">
             <div className="flex flex-col gap-3 m-auto items-start p-8 min-w-[340px]
              sm:min-w-96 border rounded-xl text-[#5ESESE] text-sm shadow-custom-light">

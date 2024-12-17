@@ -19,10 +19,10 @@ const createDoc=async (req,res)=>{
         || !speciality
         || !address
     ){
-        res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"All Fields Are Require "})
+       return  res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"All Fields Are Require "})
     }
     if(!validator.isEmail(email)){
-        res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Please Enter a Valid Email"})
+     return res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Please Enter a Valid Email"})
     }
     const imageUpload=await cloudinary.uploader.upload(imageFile.path,{resource_type:"image"});
     const imageUrl=imageUpload.secure_url;

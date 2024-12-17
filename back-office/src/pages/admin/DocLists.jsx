@@ -1,23 +1,24 @@
 import {useContext, useEffect} from "react";
 import {AdminContext} from "../../context/AdminContext.jsx";
+import {useNavigate} from "react-router-dom";
 
 const DocLists=()=>{
     const {doctors,adminToken,fetchAllDoctors,changeAvailability}=useContext(AdminContext);
+    const navigateFunction=useNavigate();
     useEffect(() => {
         if(adminToken){
             fetchAllDoctors();
         }
     }, [adminToken]);
     return (
-        <div className="m-5 max-h-[90vh] overflow-scroll">
-            <p className="text-lg font-medium text-primary text-center">All Doctors</p>
-            <div className="w-full flex flex-wrap gap-4 pt-5 gap-y-6 ">
+            <div className="w-full grid grid-cols-auto gap-4 pt-5 gap-y-6 px-3 sm:px-0">
                 {
                     doctors.map((doctor,index)=>(
-                        <div key={index}
+                        <div onClick={()=>navigateFunction(`/AddDoctors/${doctor._id}`)}
+                             key={index}
                              className="border border-blue-200 rounded-xl overflow-hidden cursor-pointer
-                         hover:translate-y-[-10px] transition-all
-                         duration-500">
+                             hover:translate-y-[-10px] transition-all
+                             duration-500" >
                             <img src={doctor.image} alt="Doctor image" className="bg-indigo-50 hover:bg-primary transition-all duration-500 "/>
                             <div className="p-4">
                                 <p className="text-neutral-800 text-lg font-medium">{doctor.name}</p>
@@ -52,7 +53,6 @@ const DocLists=()=>{
                     ))
                 }
             </div>
-        </div>
     )
 }
 export default DocLists;
