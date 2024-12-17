@@ -11,6 +11,9 @@ import Appointments from "./pages/admin/Appointments.jsx";
 import DocLists from "./pages/admin/DocLists.jsx";
 import AddDoc from "./pages/admin/AddDoc.jsx";
 import {DoctorContext} from "./context/DoctorContext.jsx";
+import DoctorDashBoard from "./pages/Doctor/DoctorDashBoard.jsx";
+import DoctorAppointments from "./pages/Doctor/DoctorAppointments.jsx";
+import DoctorProfile from "./pages/Doctor/DoctorProfile.jsx";
 
 
 
@@ -25,11 +28,16 @@ const App = () => {
             <div className="flex items-start">
                 <SideBar/>
                 <Routes>
+                {/*Admin Routes*/}
                     <Route path="/" element={<></>} />
                     <Route path="/DashBoard" element={<DashBoard/>}/>
                     <Route path="/AddDoctors" element={<AddDoc/>}/>
                     <Route path="/DoctorsList" element={<DocLists/>}/>
                     <Route path="/Appointments" element={<Appointments/>}/>
+                {/*Doctor Routes */}
+                    <Route path={"/Doctor_DashBord"} element={<DoctorDashBoard/>}/>
+                    <Route path={"/Doctor_Appointments"} element={<DoctorAppointments/>}/>
+                    <Route path={"/Profile"} element={<DoctorProfile/>}/>
                 </Routes>
             </div>
         </div>
