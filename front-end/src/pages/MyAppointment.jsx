@@ -56,7 +56,7 @@ function MyAppointments() {
             {headers:{Authorization:`Bearer ${token}`}})
             console.log(data)
             if (data.success) {
-                window.location=data.approval_url; // redirect user to Paypal page to Pay
+                window.location=data.approval_url; // redirect Doctor to Paypal page to Pay
             } else{
                 console.log(data.message)
                 toast("Failed to initiate payment. Please try again.",{type:"error"});

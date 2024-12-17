@@ -28,10 +28,12 @@ const changeAvailability=async (req,res)=>{
 const login=async (req,res)=>{
         // get Doctor Email and Password From the body
         const {email,password}=req.body
-        if(!email || !password)return  res.status(StatusCodes.NOT_FOUND).json({success:false,msg:"Invalid Email or password"});
+        console.log(email,password)
+        if(!email || !password)return  res.status(StatusCodes.UNAUTHORIZED).json({success:false,message:"Invalid Email" +
+                "or password"});
         const doctor=await DoctorModel.findOne({email});
         // check if we Have this doctor email and password
-        if(!doctor)throw new CustomError("Invalid Email or Password",StatusCodes.BAD_REQUEST)
+        if(!doctor)throw new UnauthenticatedError("Invalid Email or Password");
         // check password is match
         const passwordValidation=await doctor.comparePassword(password)
         if(!passwordValidation) throw new UnauthenticatedError("Invalid credentials")

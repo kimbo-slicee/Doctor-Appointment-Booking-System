@@ -3,13 +3,13 @@ import {AdminContext} from "../context/AdminContext.jsx";
 import axios from "axios";
 import {Bounce, toast} from "react-toastify";
 import Spinner from "../components/Spinner.jsx";
-import DoctorContext from "../context/DoctorContext.jsx";
+import {DoctorContext} from "../context/DoctorContext.jsx";
 const Login=()=>{
     const [state,setState]=useState("Admin");
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('');
     const {setAdminToken,backEndUrl}=useContext(AdminContext)
-    const {doctorToken,setDoctorToken,backendUrl}=useContext(DoctorContext)
+    const {doctorToken,setDoctorToken}=useContext(DoctorContext)
     const [loading,setLoading]=useState(false)
     const submitHandler=async (e)=>{
         e.preventDefault();
@@ -28,17 +28,19 @@ const Login=()=>{
             }else{
                 const {data}=await axios.post(`${backEndUrl}/api/v1/doctor/login`,{email,password})
                 if(data.success){
-                    console.log(data)
+                    toast("Login Successful",{type:"success"});
+                    setDoctorToken(`Bearer ${data.token}`);
+                    localStorage.setItem("doctorToken",`Bearer ${data.token}`);
                     setLoading(false);
-                    // setAdminToken(data.token)
-                    toast("Login Successful",{type:"success"})
                 }else {
+                    toast(data.message ,{type:"error"})
                     console.log(data)
+                setLoading(false)
                 }
             }
         }catch (error){
-            console.log(error)
-            toast.error(`${error.message}`, {
+            setLoading(false)
+            toast.error(`${error.response.data.message}`, {
                 position: "top-center",
                 autoClose: true,
                 hideProgressBar: false,
@@ -58,14 +60,14 @@ const Login=()=>{
                 <p className="text-2xl font-semibold m-auto text-primary uppercase"><span className="mx-1">{state}</span>Login</p>
                 <div className="w-full">
                     <p className="text-zinc-700 text-sm">Email</p>
-                    <input onChange={(e)=>setEmail(e.target.value)}
+                    <input onChange={(e)=>setEmail(e.target.value.trim())}
                            type="text" required className="border border-[#DADADA] rounded w-full p-2 mt-1"
                            value={email}
                     />
                 </div>
                 <div className="w-full">
                     <p className="text-zinc-700 text-sm">Password</p>
-                    <input onChange={(e)=>setPassword(e.target.value)}
+                    <input onChange={(e)=>setPassword(e.target.value.trim())}
                         type="password" required className="border border-[#DADADA] rounded w-full p-2 mt-1"/>
                 </div>
                 <button className="bg-primary text-white w-full py-2 rounded-md text-base ">Login</button>

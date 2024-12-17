@@ -23,7 +23,7 @@ app.use(cors());
 // api end point
 app.use('/api/v1/admin',adminRoute);
 app.use('/api/v1/doctor',doctorRoute);
-app.use('/api/v1/user',userRoute);
+app.use('/api/v1/Doctor',userRoute);
 //Error Middlewares
 app.use(notFound);
 // // Global error handler (for other types of errors)

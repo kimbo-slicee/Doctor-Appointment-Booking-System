@@ -23,7 +23,7 @@ if(!validator.isEmail(email)){
 if(password.length<0){
     return req.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Enter a Strong password"});
 }
-// hash user Password
+// hash Doctor Password
     const user=await userModel.create({...req.body});
     const token=user.createJWT();
     res.status(StatusCodes.CREATED).json({success:true,token});
@@ -118,12 +118,12 @@ const bookAppointment=async (req, res)=>{
 // Get All User Appointment
 const appointmentsList=async (req,res)=>{
     const {userID}=req;
-    const userAppointment=await AppointmentModel.find({userId:userID})// Using user ID I will fetch all appointment
+    const userAppointment=await AppointmentModel.find({userId:userID})// Using Doctor ID I will fetch all appointment
     if(!userAppointment){
         return res.status(StatusCodes.OK).json({message:"This User Has No Appointment"})
     }
     res.status(StatusCodes.OK).json({success:true,data:userAppointment,count:userAppointment.length});
-    // related with this user
+    // related with this Doctor
 
 }
 // Cancel Appointment

@@ -10,13 +10,15 @@ import DashBoard from "./pages/admin/DashBoard.jsx";
 import Appointments from "./pages/admin/Appointments.jsx";
 import DocLists from "./pages/admin/DocLists.jsx";
 import AddDoc from "./pages/admin/AddDoc.jsx";
+import {DoctorContext} from "./context/DoctorContext.jsx";
 
 
 
 const App = () => {
     const {adminToken}=useContext(AdminContext);
-    return adminToken
-        ? (
+    const {doctorToken}=useContext(DoctorContext);
+
+    return adminToken || doctorToken ? (
         <div className="bg-[#F8F9FD]">
             <ToastContainer/>
             <NavBar/>
