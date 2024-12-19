@@ -48,21 +48,21 @@ const SideBar =()=>{
                              className={({isActive})=>`flex items-center gap-3 py-3.5 px-3 md:px-9 
                          md:min-w-72 cursor-pointer ${isActive?'bg-[#F2F3FF] border-r-4 border-primary':'' }`}>
                         <img src={assets.home_icon} alt="Home Icon" />
-                        <p className="uppercase">Dashboard</p>
+                        <p className="hidden md:block uppercase">Dashboard</p>
                     </NavLink>
                     <NavLink to={'/Doctor_Appointments'}
                              className={({isActive})=>`flex items-center gap-3 py-3.5 px-3 md:px-9 
                          md:min-w-72 cursor-pointer ${isActive?'bg-[#F2F3FF] border-r-4 border-primary':'' }`}
                     >
                         <img src={assets.appointment_icon} alt="Add New Doctor"/>
-                        <p className="uppercase">Doctor Appointments List</p>
+                        <p className="hidden md:block  uppercase">Doctor Appointments List</p>
                     </NavLink>
                     <NavLink to={'/Profile'}
                              className={({isActive})=>`flex items-center gap-3 py-3.5 px-3 md:px-9 
                          md:min-w-72 cursor-pointer ${isActive?'bg-[#F2F3FF] border-r-4 border-primary':'' }`}
                     >
                         <img src={assets.people_icon} alt="Appointment" />
-                        <p className="uppercase">Profile</p>
+                        <p className="hidden md:block uppercase">Profile</p>
                     </NavLink>
 
                 </ul>

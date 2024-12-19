@@ -9,14 +9,14 @@ const Login=()=>{
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('');
     const {setAdminToken,backEndUrl}=useContext(AdminContext)
-    const {doctorToken,setDoctorToken}=useContext(DoctorContext)
+    const {setDoctorToken}=useContext(DoctorContext)
     const [loading,setLoading]=useState(false)
     const submitHandler=async (e)=>{
         e.preventDefault();
         setLoading(true)
         try{
             if(state==="Admin"){
-                const {data}=await axios.post(`${backEndUrl}/api/v1/admin/login`,{email,password})
+                const {data}=await axios.post(`${backEndUrl}/admin/login`,{email,password})
                 if(data.success) {
                     localStorage.setItem('adminToken',`Bearer ${data.token}`);
                     setAdminToken(`Bearer ${data.token}`);
@@ -26,7 +26,7 @@ const Login=()=>{
                     setLoading(false);
                 }
             }else{
-                const {data}=await axios.post(`${backEndUrl}/api/v1/doctor/login`,{email,password})
+                const {data}=await axios.post(`${backEndUrl}/doctor/login`,{email,password})
                 if(data.success){
                     toast("Login Successful",{type:"success"});
                     setDoctorToken(`Bearer ${data.token}`);
@@ -60,14 +60,14 @@ const Login=()=>{
                 <p className="text-2xl font-semibold m-auto text-primary uppercase"><span className="mx-1">{state}</span>Login</p>
                 <div className="w-full">
                     <p className="text-zinc-700 text-sm">Email</p>
-                    <input onChange={(e)=>setEmail(e.target.value.trim())}
+                    <input onChange={(e)=>setEmail(e.target.value)}
                            type="text" required className="border border-[#DADADA] rounded w-full p-2 mt-1"
                            value={email}
                     />
                 </div>
                 <div className="w-full">
                     <p className="text-zinc-700 text-sm">Password</p>
-                    <input onChange={(e)=>setPassword(e.target.value.trim())}
+                    <input onChange={(e)=>setPassword(e.target.value)}
                         type="password" required className="border border-[#DADADA] rounded w-full p-2 mt-1"/>
                 </div>
                 <button className="bg-primary text-white w-full py-2 rounded-md text-base ">Login</button>

@@ -56,7 +56,7 @@ const upDateUserData=async (req,res)=>{
         throw new CustomError("All Files Are Require",StatusCodes.BAD_REQUEST);
     }
 
-    const user=await userModel.findByIdAndUpdate(userID,{name,email,phone,password,address,gender,dob});
+    await userModel.findByIdAndUpdate(userID,{name,email,phone,password,address,gender,dob});
     if(fileImage){
         const imageUpload=await cloudinary.uploader.upload(fileImage.path,{resource_type:"image"});
         const imageURL=imageUpload.secure_url;
@@ -64,7 +64,7 @@ const upDateUserData=async (req,res)=>{
     }
     res.status(StatusCodes.OK).json({success:true,message:"Profile updated Succfuly"})
 }
-//  Delte Profie
+//  Delete Profile API
 const deleteUser= async (req, res)=>{
     const {userId}=req.user;
     if(!userId){

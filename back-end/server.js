@@ -21,9 +21,9 @@ app.use(express.json());
 // Cors Middleware
 app.use(cors());
 // api end point
-app.use('/api/v1/admin',adminRoute);
-app.use('/api/v1/doctor',doctorRoute);
-app.use('/api/v1/Doctor',userRoute);
+app.use('/api/v1/admin',adminRoute);// invoking Admin Router Middleware API
+app.use('/api/v1/doctor',doctorRoute);// Doctor Routes
+app.use('/api/v1/user',userRoute);// User Routes
 //Error Middlewares
 app.use(notFound);
 // // Global error handler (for other types of errors)

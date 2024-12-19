@@ -43,12 +43,13 @@ const userSchema=new mongoose.Schema({
         default:"Male",
     },
     dob:{
-        type:String,
-        default:'00-00-0000'
+        type:Date,
+        default:Date.now()
     },
     role:{
         type:String,
-        default:"user"
+        enum:["user","admin","doctor"],
+        default:"User"
     },
     createdAt: {
         type: Date,

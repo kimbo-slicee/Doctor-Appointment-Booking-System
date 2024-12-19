@@ -6,10 +6,33 @@ import jwt from "jsonwebtoken";
 import {CustomError} from "../Error/index.js";
 import AppointmentModel from "../models/appointment.js";
 import userModel from "../models/user.js";
+// login Controller
+ const login=async (req,res)=>{
+    const {email,password}=req.body;
+    if(email===process.env.ADMIN_EMAIL && password===process.env.ADMIN_PASSWORD){
+        try{
+            const token=await jwt.sign({email,password},process.env.JWT_SECRET);// create new Jwt Token
+            res.status(StatusCodes.OK).json({success:true,token:token});
+        }catch (error){
+           throw new  CustomError("UNAUTHORIZED USER",StatusCodes.UNAUTHORIZED)
+        }
+
+    }else{
+            res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Email or password are not Valid"});
+
+    }
+
+ }
 const createDoc=async (req,res)=>{
+    // First we need To Check Admin Credentials
+    const {user}=req.user
+    // if(user.role==="admin" &&  typeof user.role==="string"){}
     const {name,email,password,experience,phone,degree,about,fess,speciality,available,address}=req.body
+
+    // Starting Adding New Admin
     const imageFile=req.file;
-    if(    !name
+    if(
+        !name
         || !email
         || !password
         || !phone
@@ -19,10 +42,10 @@ const createDoc=async (req,res)=>{
         || !speciality
         || !address
     ){
-       return  res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"All Fields Are Require "})
+        return  res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"All Fields Are Require "})
     }
     if(!validator.isEmail(email)){
-     return res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Please Enter a Valid Email"})
+        return res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Please Enter a Valid Email"})
     }
     const imageUpload=await cloudinary.uploader.upload(imageFile.path,{resource_type:"image"});
     const imageUrl=imageUpload.secure_url;
@@ -44,24 +67,8 @@ const createDoc=async (req,res)=>{
     const doctor = await DoctorModel.create(newDoctor);
     res.status(StatusCodes.OK).json({success:true,data:doctor})
 }
-// login Controller
- const login=async (req,res)=>{
-    const {email,password}=req.body;
-    if(email===process.env.ADMIN_EMAIL && password===process.env.ADMIN_PASSWORD){
-        try{
-            const token=await jwt.sign({email,password},process.env.JWT_SECRET);// create new Jwt Token
-            res.status(StatusCodes.OK).json({success:true,token:token});
-        }catch (error){
-           throw new  CustomError("UNAUTHORIZED USER",StatusCodes.UNAUTHORIZED)
-        }
 
-    }else{
-            res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Email or password are not Valid"});
-
-    }
-
- }
- // Get All Doctors
+// Get All Doctors
 const getAllDoctors=async (req, res)=>{
     try{
     const doctors=await DoctorModel.find({}).select('-password')

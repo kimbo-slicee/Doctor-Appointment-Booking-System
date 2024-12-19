@@ -1,18 +1,14 @@
 import DoctorModel from "../models/doctor.js";
 import {StatusCodes} from "http-status-codes";
-import {CustomError} from "../Error/index.js";
 import UnauthenticatedError from "../Error/unauthenticatedError.js";
+import {CustomError} from "../Error/index.js";
+import AppointmentModel from "../models/appointment.js";
 const getAllocators=async(req, res)=>{
-    //  Pagination
-    const limit=Number(req.query.limit) || 5;
-    const page=Number(req.query.page) || 1 ;
-    const skip  =(page-1)*limit; // pagination algorithm
     const allDoctors=await DoctorModel.find({})
-        .sort("-createdAt")
-        .limit(limit)
-        .skip(skip).select(['-password','-email']);
+        .sort("-createdAt").select('-password');
     res.status(StatusCodes.OK).json({success:true,allDoctors,count:allDoctors.length});
 }
+// Change Change Doctor Availability API
 const changeAvailability=async (req,res)=>{
     const {
         params:{id:docId},
@@ -24,7 +20,7 @@ const changeAvailability=async (req,res)=>{
         docId, {available:!doctor.available},{new:true,runValidators:true});
     res.status(StatusCodes.OK).json({success:true,availability:upDatedDoctorAvailability["available"]});
 }
-// Doctor Login
+// Doctor Login API
 const login=async (req,res)=>{
         // get Doctor Email and Password From the body
         const {email,password}=req.body
@@ -41,4 +37,24 @@ const login=async (req,res)=>{
         const token=doctor.createJWT()
         res.status(StatusCodes.OK).json({success:true,token,message:"Login Successful"})
 }
-export {changeAvailability,getAllocators,login}
+// Get Doc Appointments API
+const getDocAppointments=async (req,res)=>{
+    const {docId}=req;
+    console.log(docId)
+      if(!docId) throw new CustomError("Please Provide A Doctor ID",StatusCodes.BAD_REQUEST);
+      const doctorAppointments=await AppointmentModel.find({docId});
+      res.status(StatusCodes.OK).json({success:true,doctorAppointments,amount:doctorAppointments.length})
+}
+// Doctor Complete Appointment Controller
+const completeAppointments=async (req, res)=>{
+    const {appointmentsId}=req.body;
+    const {docId}=req;
+    if(!appointmentsId || !docId) throw new CustomError("Please Provide Doctor Id or Appointments Id ",StatusCodes.BAD_REQUEST);
+    const appointment=await AppointmentModel.findByIdAndUpdate(appointmentsId,{isCompleted:true});
+    console.log(appointment);
+    if(!appointment && !docId===appointment.docId) throw new CustomError("")
+    res.status(StatusCodes.OK).json({success:true ,data:appointment,message:"Appointment Has been completed" +
+            " Successfully"})
+}
+// Doctor Cancel Appointments Controller
+export {changeAvailability,getAllocators,login,getDocAppointments,completeAppointments}

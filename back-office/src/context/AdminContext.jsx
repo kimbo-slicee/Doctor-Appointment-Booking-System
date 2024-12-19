@@ -12,10 +12,10 @@ const AdminContextProvider=(props)=>{
     const [dashData,setDashData]=useState(false);
     const fetchAllDoctors=async ()=>{
         try{
-            const {data}=await axios.get(`${backEndUrl}/api/v1/admin`,{headers: {Authorization: adminToken}});
+            const {data}=await axios.get(`${backEndUrl}/admin`,{headers: {Authorization: adminToken}});
             if(data.success){
+
                 setDoctors(data['data'])
-                console.log(data['data']);
             }else {
                 toast.error(data.message)
             }
@@ -28,7 +28,7 @@ const AdminContextProvider=(props)=>{
     const appointmentList=async ()=>{
         try{
             const {data}=await axios({
-                url:`${backEndUrl}/api/v1/admin/appointments`,
+                url:`${backEndUrl}/admin/appointments`,
                 method:"get",
                 headers:{Authorization: adminToken}
             });
@@ -44,7 +44,7 @@ const AdminContextProvider=(props)=>{
     }
     const changeAvailability=async (docId)=>{
         try{
-            const {data}=await axios.patch(`${backEndUrl}/api/v1/admin/doctor/${docId}`,{},{headers: {Authorization: adminToken}});
+            const {data}=await axios.patch(`${backEndUrl}/admin/doctor/${docId}`,{},{headers: {Authorization: adminToken}});
             if(data.success){
                     await fetchAllDoctors();
                 data.availability?toast.success("Doctor now available"):toast.warning("Doctor now not available");
@@ -57,7 +57,7 @@ const AdminContextProvider=(props)=>{
     const cancelAppointment=async (appointmentId)=>{
         try{
             const {data}=await axios({
-                url:`${backEndUrl}/api/v1/admin/appointments`,
+                url:`${backEndUrl}/admin/appointments`,
                 method:"patch",
                 headers:{Authorization:adminToken},
                 data:{appointmentId}
@@ -74,7 +74,7 @@ const AdminContextProvider=(props)=>{
     const getDashBoardData=async ()=>{
         try{
             const {data}=await axios({
-                url:`${backEndUrl}/api/v1/admin/dashboard`,
+                url:`${backEndUrl}/admin/dashboard`,
                 method:"get",
                 headers:{Authorization:adminToken}
             })

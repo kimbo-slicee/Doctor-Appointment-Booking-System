@@ -2,8 +2,7 @@ import {useContext, useEffect} from "react";
 import {AdminContext} from "../../context/AdminContext.jsx";
 import {AppContext} from "../../context/AppContext.jsx";
 import {assets} from "../../assets/assets.js";
-import axios from "axios";
-import {toast} from "react-toastify";
+
 
 const Appointments =()=>{
     const{adminToken,appointmentList,appointments,setAppointments,cancelAppointment}=useContext(AdminContext);
