@@ -3,7 +3,6 @@ import {StatusCodes} from "http-status-codes";
 import UnauthenticatedError from "../Error/unauthenticatedError.js";
 import {CustomError} from "../Error/index.js";
 import AppointmentModel from "../models/appointment.js";
-import {STATES} from "mongoose";
 const getAllocators=async(req, res)=>{
     const allDoctors=await DoctorModel.find({})
         .sort("-createdAt").select('-password');
@@ -74,7 +73,7 @@ const cancelAppointment=async (req,res)=>{
         return res.status(StatusCodes.OK).json({success:true,message:"This Appointment Already Canceled" })
     }else {
         await AppointmentModel.findByIdAndUpdate(appointmentId,{cancelled:true});
-        return res.status(StatusCodes.OK).json({success:true,message:"Appointment Canceled Successfully" })
+        return res.status(StatusCodes.OK).json({success:true,message:"Appointment Canceled Successfully"})
     }
 }
 
