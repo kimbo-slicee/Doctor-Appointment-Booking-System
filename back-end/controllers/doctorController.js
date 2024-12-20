@@ -3,6 +3,7 @@ import {StatusCodes} from "http-status-codes";
 import UnauthenticatedError from "../Error/unauthenticatedError.js";
 import {CustomError} from "../Error/index.js";
 import AppointmentModel from "../models/appointment.js";
+import appointment from "../models/appointment.js";
 const getAllocators=async(req, res)=>{
     const allDoctors=await DoctorModel.find({})
         .sort("-createdAt").select('-password');
@@ -76,5 +77,27 @@ const cancelAppointment=async (req,res)=>{
         return res.status(StatusCodes.OK).json({success:true,message:"Appointment Canceled Successfully"})
     }
 }
+// Doctor Appointments Details Controller
+const appointmentDetails=async (req,res)=>{
+const {docId}=req;
+let docWallet=0
+let patients=[]
+ if(!docId) throw new CustomError("docId Messing",StatusCodes.BAD_REQUEST);
+ const appointments=await AppointmentModel.find({docId});
+ if(!appointments) throw new CustomError("Appointments Not Found",StatusCodes.BAD_REQUEST)
+ appointments.map(appointment=>{
+     if(appointment.isCompleted || appointment.payment) docWallet+=appointment.amount;
+     if(!patients.includes(appointment.userID)) patients.push(appointment.userID);
+     const dashData={
+         docWallet,
+         appointmentsList:appointments.length,
+         patientsList:appointment.length,
+         lastAppointments:appointments.reverse()
+     }
+     res.status(StatusCodes.OK).json({success:true,data:dashData,message:"Appointments Doctor Data Loaded seccsufuly"})
+ })
 
-export {changeAvailability,getAllocators,login,getDocAppointments,completeAppointments,cancelAppointment}
+
+}
+
+export {changeAvailability,getAllocators,login,getDocAppointments,completeAppointments,cancelAppointment,appointmentDetails}

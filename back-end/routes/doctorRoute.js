@@ -1,6 +1,7 @@
 import express from "express";
 const doctorRouter=express.Router();
 import {
+    appointmentDetails,
     cancelAppointment,
     completeAppointments,
     getAllocators,
@@ -15,4 +16,6 @@ doctorRouter.route('/dashboard')
     .get(doctorAuth,getDocAppointments)
     .patch(doctorAuth,completeAppointments)
     .put(doctorAuth,cancelAppointment);
+doctorRouter.route('/dashboard/details').get(doctorAuth,appointmentDetails);
+
 export default doctorRouter;
