@@ -2,7 +2,6 @@ import {useContext, useEffect} from "react";
 import {AdminContext} from "../../context/AdminContext.jsx";
 import {assets} from "../../assets/assets.js";
 import {AppContext} from "../../context/AppContext.jsx";
-import {DoctorContext} from "../../context/DoctorContext.jsx";
 const DashBoard=()=>{
     const{adminToken,dashData,getDashBoardData,cancelAppointment}=useContext(AdminContext);
     const {slotDateFormat}=useContext(AppContext);

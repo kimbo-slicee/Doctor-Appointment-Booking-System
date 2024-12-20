@@ -8,6 +8,7 @@ const DoctorContextProvider=(props)=>{
     const [doctorToken,setDoctorToken]=useState(localStorage.getItem('doctorToken')?localStorage.getItem('doctorToken'):'');
     const [appointments,setAppointments]=useState([]);
     const [loading,setLoading]=useState(false);
+    const [docDashData,setDocDashData]=useState(false);
     // Get All Doctor Appointments Using Doctor API
     const getAllDoctorAppointments=async ()=>{
         setLoading(true);
@@ -69,9 +70,30 @@ const DoctorContextProvider=(props)=>{
 
     }
 
+    const getDashBoardData=async ()=>{
+    setLoading(true)
+        try{
+            const {data} = await axios({
+                url: `${backendUrl}/doctor/dashboard/details`,
+                method: "get",
+                headers: {Authorization: doctorToken}
+            })
+            if (data.success) {
+                setLoading(false)
+                setDocDashData(data);
+                console.log(data)
+            }
+        }catch(error){
+        setLoading(false)
+        toast(error.response?.data.message,{type:"error"})
+        console.log(error)
+        }
+    }
+
     const value={
         doctorToken,setDoctorToken,backendUrl,
-        getAllDoctorAppointments,appointments,setAppointments,loading,completeAppointment,cancelAppointment
+        getAllDoctorAppointments,appointments,setAppointments,loading,
+        completeAppointment,cancelAppointment, getDashBoardData,docDashData
     }
     return(
         <DoctorContext.Provider value={value}>

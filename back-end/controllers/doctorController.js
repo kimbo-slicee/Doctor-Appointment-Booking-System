@@ -3,7 +3,6 @@ import {StatusCodes} from "http-status-codes";
 import UnauthenticatedError from "../Error/unauthenticatedError.js";
 import {CustomError} from "../Error/index.js";
 import AppointmentModel from "../models/appointment.js";
-import appointment from "../models/appointment.js";
 const getAllocators=async(req, res)=>{
     const allDoctors=await DoctorModel.find({})
         .sort("-createdAt").select('-password');
@@ -14,9 +13,9 @@ const changeAvailability=async (req,res)=>{
     const {
         params:{id:docId},
     }=req;
-    if(!docId) res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Please provide a valid id"})
+    if(!docId) return  res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Please provide a valid id"})
     const doctor=await DoctorModel.findById(docId);
-    if(!doctor) res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"doctor withe this ID not found "});
+    if(!doctor) return  res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"doctor withe this ID not found "});
     const upDatedDoctorAvailability =await DoctorModel.findByIdAndUpdate(
         docId, {available:!doctor.available},{new:true,runValidators:true});
     res.status(StatusCodes.OK).json({success:true,availability:upDatedDoctorAvailability["available"]});
@@ -25,7 +24,6 @@ const changeAvailability=async (req,res)=>{
 const login=async (req,res)=>{
         // get Doctor Email and Password From the body
         const {email,password}=req.body
-        console.log(email,password)
         if(!email || !password)return  res.status(StatusCodes.UNAUTHORIZED).json({success:false,message:"Invalid Email" +
                 "or password"});
         const doctor=await DoctorModel.findOne({email});
@@ -91,7 +89,7 @@ let patients=[]
      const dashData={
          docWallet,
          appointmentsList:appointments.length,
-         patientsList:appointment.length,
+         patientsList:patients.length,
          lastAppointments:appointments.reverse()
      }
      res.status(StatusCodes.OK).json({success:true,data:dashData,message:"Appointments Doctor Data Loaded seccsufuly"})
