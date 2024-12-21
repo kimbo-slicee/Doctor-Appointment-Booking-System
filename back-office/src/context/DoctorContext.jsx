@@ -9,6 +9,29 @@ const DoctorContextProvider=(props)=>{
     const [appointments,setAppointments]=useState([]);
     const [loading,setLoading]=useState(false);
     const [docDashData,setDocDashData]=useState(false);
+    const [doctorData,setDoctorData]=useState(false);
+
+    // Get Doctor Data
+    const getDoctorData=async ()=>{
+        setLoading(true);
+        try{
+            const {data}=await axios({
+            url:`${backendUrl}/doctor/profile`,
+            method:"get",
+            headers:{Authorization:doctorToken}
+            });
+            if(data.success){
+                setLoading(false)
+                setDoctorData(data["data"]);
+                console.log(data)
+            }
+        }catch (error){
+                setLoading(true)
+            console.log(error)
+            toast(error.response?.data.message,{type:"error"})
+        }
+    }
+
     // Get All Doctor Appointments Using Doctor API
     const getAllDoctorAppointments=async ()=>{
         setLoading(true);
@@ -25,6 +48,8 @@ const DoctorContextProvider=(props)=>{
         }catch (error){
             console.log(error)
             setLoading(false);
+            toast(error.response?.data.message,{type:"error"})
+
         }
     }
     //Doctor Complete Appointment Function
@@ -93,7 +118,7 @@ const DoctorContextProvider=(props)=>{
     const value={
         doctorToken,setDoctorToken,backendUrl,
         getAllDoctorAppointments,appointments,setAppointments,loading,
-        completeAppointment,cancelAppointment, getDashBoardData,docDashData
+        completeAppointment,cancelAppointment, getDashBoardData,docDashData,getDoctorData,doctorData
     }
     return(
         <DoctorContext.Provider value={value}>

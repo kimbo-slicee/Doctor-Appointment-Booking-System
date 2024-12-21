@@ -2,6 +2,7 @@ import {StatusCodes} from "http-status-codes";
 import {CustomError} from "../Error/index.js";
 const errorHandler = (err, req, res,next) => {
     if (err instanceof CustomError) {
+        next()
        return res.status(err.statusCode).json({ success:false, message: err.message });
     }
     console.log(err)

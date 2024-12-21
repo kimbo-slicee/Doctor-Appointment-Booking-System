@@ -9,21 +9,18 @@ import DoctorModel from "../models/doctor.js";
 import AppointmentModel from "../models/appointment.js";
 import {getAccessToken} from "../config/paypal.js";
 import axios from "axios";
-import {response} from "express";
-
 // Register Controller
 const register=async (req, res)=>{
 const {name,email,password,phone}=req.body;
-console.log(req.body);
 if(!name || !email || !password || !phone){
     return req.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Missing Details"})
 }
 if(!validator.isEmail(email)){
+    throw new CustomError("Email Not Valid ",StatusCodes.BAD_REQUEST)
 }
 if(password.length<0){
     return req.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Enter a Strong password"});
 }
-// hash Doctor Password
     const user=await userModel.create({...req.body});
     const token=user.createJWT();
     res.status(StatusCodes.CREATED).json({success:true,token});

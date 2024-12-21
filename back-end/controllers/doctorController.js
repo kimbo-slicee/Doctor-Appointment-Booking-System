@@ -3,7 +3,9 @@ import {StatusCodes} from "http-status-codes";
 import UnauthenticatedError from "../Error/unauthenticatedError.js";
 import {CustomError} from "../Error/index.js";
 import AppointmentModel from "../models/appointment.js";
+import appointment from "../models/appointment.js";
 const getAllocators=async(req, res)=>{
+    // ++ Pagination and search
     const allDoctors=await DoctorModel.find({})
         .sort("-createdAt").select('-password');
     res.status(StatusCodes.OK).json({success:true,allDoctors,count:allDoctors.length});
@@ -86,16 +88,44 @@ let patients=[]
  appointments.map(appointment=>{
      if(appointment.isCompleted || appointment.payment) docWallet+=appointment.amount;
      if(!patients.includes(appointment.userID)) patients.push(appointment.userID);
-     const dashData={
-         docWallet,
-         appointmentsList:appointments.length,
-         patientsList:patients.length,
-         lastAppointments:appointments.reverse()
-     }
-     res.status(StatusCodes.OK).json({success:true,data:dashData,message:"Appointments Doctor Data Loaded seccsufuly"})
- })
 
+ })
+    const dashData={
+        docWallet,
+        appointmentsList:appointments.length,
+        patientsList:patients.length,
+        lastAppointments:appointments.reverse()
+    }
+ res.status(StatusCodes.OK).json({success:true,data:dashData,message:"Appointments Doctor Data Loaded seccsufuly"})
+
+}
+// Doctor Profile Data Controller
+const doctorProfile=async (req,res)=>{
+    const {docId}=req;
+    const doctor=await DoctorModel.findById(docId).select("-password");
+    if(!doctor) throw new CustomError("Doctor Not Found ",StatusCodes.BAD_REQUEST);
+    res.status(StatusCodes.OK).json({success:true,data:doctor,message:"Doctor Profile Loaded"});
+}
+// Update Doctor Profile Controller
+const updateDoctorProfile=async (req,res)=>{
+// check for Doctor Id
+
+}
+// Delete Doctor Profile Controller
+const deleteDoctorProfile=async (req, res)=>{
 
 }
 
-export {changeAvailability,getAllocators,login,getDocAppointments,completeAppointments,cancelAppointment,appointmentDetails}
+
+export {
+    changeAvailability,
+    getAllocators,
+    login,
+    getDocAppointments,
+    completeAppointments,
+    cancelAppointment,
+    appointmentDetails,
+    doctorProfile,
+    deleteDoctorProfile,
+    updateDoctorProfile
+}
