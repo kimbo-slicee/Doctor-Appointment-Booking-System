@@ -10,6 +10,7 @@ const DoctorContextProvider=(props)=>{
     const [loading,setLoading]=useState(false);
     const [docDashData,setDocDashData]=useState(false);
     const [doctorData,setDoctorData]=useState(false);
+    const yearsOfExperience=['1 Year','2 Years','3 Years','4 Years','5 Years','6 Years','7 Years','8 Years','9 Years',' + 10 Years']
 
     // Get Doctor Data
     const getDoctorData=async ()=>{
@@ -118,7 +119,8 @@ const DoctorContextProvider=(props)=>{
     const value={
         doctorToken,setDoctorToken,backendUrl,
         getAllDoctorAppointments,appointments,setAppointments,loading,
-        completeAppointment,cancelAppointment, getDashBoardData,docDashData,getDoctorData,doctorData
+        completeAppointment,cancelAppointment, getDashBoardData,docDashData,
+        getDoctorData,doctorData,yearsOfExperience,setDoctorData
     }
     return(
         <DoctorContext.Provider value={value}>

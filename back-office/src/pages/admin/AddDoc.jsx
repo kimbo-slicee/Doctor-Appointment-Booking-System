@@ -20,7 +20,7 @@ const AddDoc=()=>{
     const [address2,setAddress2]=useState('');
     const [availability,setAvailability]=useState(true);
     const  {backEndUrl,adminToken}=useContext(AdminContext);
-    let [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const navigate=useNavigate();
 
     const handelSubmit = async (e)=>{

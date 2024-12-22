@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext, useState} from 'react'
 import {AppContext} from "../context/AppContext.jsx";
 import {assets} from "../assets/assets.js";
 import {toast} from "react-toastify";
@@ -100,9 +100,9 @@ function Profile() {
                        setUserData((prev) => ({
                            ...prev,
                            address: {
-                               ...prev.address,
-                               line2: e.target.value, // Update only line2
-                           },
+                                   ...prev.address,
+                                   line2: e.target.value, // Update only line2
+                               },
                        }))
                    }
                    value={userData.address.line2}
