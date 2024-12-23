@@ -1,4 +1,4 @@
-import {useNavigate} from "react-router-dom";
+ import {useNavigate} from "react-router-dom";
 import {useContext} from "react";
 import {AppContext} from "../context/AppContext.jsx";
 
@@ -19,9 +19,17 @@ function TopDoc() {
                              duration-500">
                                  <img className="bg-blue-200" src={doc.image} alt=" Doctore image"/>
                                 <div className="p-4">
-                                    <div className="flex items-center gap2 text-sm text-center text-green-500">
-                                        <p className="w-2 h-2 bg-green-500 rounded-full"></p><p>Available</p>
-                                    </div>
+                                        {doc.available?
+                                            <div className="flex items-center gap-2">
+                                            <p className="w-2 h-2 bg-green-500 rounded-full"></p>
+                                            <p className="text-green-500">Available</p>
+                                            </div>
+                                            :
+                                            <div className="flex items-center gap-2">
+                                                <p className="w-2 h-2 bg-red-500 rounded-full"></p>
+                                                <p className="text-red-500">Not Available</p>
+                                            </div>
+                                        }
                                     <p className="text-gray-900 text-lg font-medium">{doc.name}</p>
                                     <p className="text-gray-600 text-sm">{doc.speciality}</p>
                                 </div>

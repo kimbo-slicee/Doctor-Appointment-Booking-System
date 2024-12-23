@@ -3,45 +3,57 @@ import {DoctorContext} from "../../context/DoctorContext.jsx";
 import {AppContext} from "../../context/AppContext.jsx";
 import {assets} from "../../assets/assets.js";
 import {TextEditor} from "../../components/TextEditor.jsx";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css"
+import Spinner from "../../components/Spinner.jsx";
+
+
 
 const DoctorProfile = () =>{
-const{getDoctorData,doctorToken,doctorData,setDoctorData,yearsOfExperience}=useContext(DoctorContext);
+const{getDoctorData,doctorToken,doctorData,setDoctorData,yearsOfExperience,
+    specialty,updateDocData,loading}=useContext(DoctorContext);
 const {currency}=useContext(AppContext);
 const [edite,setEdite]=useState(false);
 const [image,setImage]=useState(false);
-const [about,setAbout]=useState("")
 useEffect(() => {
         if(doctorToken) {
             getDoctorData()
-            // toast("You Can UPDATE or DELETE YOUR PROFILE here 👇",{type:"info",autoClose:8000})
         }
     }, [doctorToken]);
     const handelAupDate=()=>{
-        const doctorUpdatedData=new FormData({})
-        console.log()
+        const formData = new FormData();
+        image ? formData.append('image', image):formData.append('image',doctorData.image)
+        formData.append('name'     ,doctorData.name);
+        formData.append('experience',doctorData.experience);
+        formData.append('speciality',doctorData.speciality);
+        formData.append('email'    ,doctorData.email );
+        formData.append('phone'    ,doctorData.phone);
+        formData.append('address'  ,doctorData.address);
+        formData.append('about'    ,doctorData.about);
+        formData.append("fess"     ,doctorData.fess)
+        formData.append('available',doctorData.available)
+        updateDocData(formData)
+        setEdite(false)
     }
 
     return doctorData && (
     <div className="w-[50vw]">
+        <Spinner loading={loading}/>
         <div className="flex flex-col gap-4 m-5 border border-stone-100 rounded-lg p-8 py-7 bg-white shadow-custom-light">
             {edite ?
                 <label htmlFor="image">
                     <div className="inline-block relative cursor-pointer">
-                        {/*We Need to Talk */}
-                        <img className="w-36 rounded opacity-80"
-                             src={image ? URL.createObjectURL(image) : doctorData.image} alt=""/>
-                        <img className="absolute bottom-0 right-0 opacity-60 bg-gray-300 w-full"
-                             src={image ? " ": assets.upload_image} alt=""/>
+                        <img src={image ?URL.createObjectURL(image): doctorData.image} className="w-36 rounded opacity-10 bg-primary" alt=""/>
+                        <img src={image ? URL.createObjectURL(image) :assets.upload_image} className="absolute bottom-0 right-0 opacity-50 bg-gray-300 w-full"  alt=""/>
                     </div>
-                    <input type="file" id="image" onClick={e => setImage(e.target.files[0])} hidden/>
+                    <input type="file" id="image" onChange={e => setImage(e.target.files[0])} hidden/>
                 </label>
                 : <div>
-                    <img className="bg-primary w-full sm:max-w-64 rounded-lg " src={doctorData.image}
+                    <img className="bg-primary w-full sm:max-w-64 rounded-lg"
+                         src={image?URL.createObjectURL(image):doctorData.image}
                          alt="doctor Data "/>
                 </div>
-
             }
-
             <div className="flex-1 ">
                 <Fragment>
                     {edite
@@ -50,7 +62,8 @@ useEffect(() => {
                             <label className="text-m font-medium text-neutral-800 mt-3 my-3 ">Doctor Name</label>
                             <input
                                 className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                                placeholder="Change Name" value={doctorData.name}
+                                placeholder="Change Name"
+                                value={doctorData.name}
                                 onChange={(e)=>setDoctorData(prev=>({...prev,name:e.target.value}))}/>
                         </div>
                         :
@@ -63,48 +76,36 @@ useEffect(() => {
                     }
                 </Fragment>
                 <Fragment>
-
                     {edite ?
                         <div className="relative">
-                            <label className="text-m font-medium text-neutral-800 mt-3">Speciality</label> :
+                            <label className="text-m font-medium text-neutral-800 mt-3 ">Speciality</label>
                             <select
                                 onChange={(e) => setDoctorData((prev) => (
                                     {...prev, speciality: e.target.value}))}
-                                className="
-                                w-full bg-transparent placeholder:text-slate-400
-                                text-slate-700 text-sm border border-slate-200 rounded pl-3 pr-8 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md appearance-none cursor-pointer">
-                                <option  value="dfeault">{doctorData.experience}</option>
-                                {yearsOfExperience.map((ele, index) => (
+                                className="bg-transparent pl-3 pr-8 py-3  border border-gray-300 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            >
+                                <option  value="dfeault" hidden>{doctorData.speciality}</option>
+                                {specialty.map((ele, index) => (
                                     <option key={index} value={ele}>{ele}</option>
                                 ))}
                             </select>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                 strokeWidth="1.2" stroke="currentColor"
-                                 className="h-5 w-5 ml-1 absolute top-10 right-3 text-slate-700">
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                      d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"/>
-                            </svg>
-
-                            <label className="text-m font-medium text-neutral-800 mt-3">Experience</label>
+                            <label className="text-m font-medium text-neutral-800 mt-3 mb-3">Experience</label>
                             <select
                                 onChange={(e) => setDoctorData((prev) => (
                                     {...prev, experience: e.target.value}))}
-                                className="
-                                w-full bg-transparent relative placeholder:text-slate-400
-                                text-slate-700 text-sm border border-slate-200 rounded pl-3 pr-8 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md appearance-none cursor-pointer">
+                                    className="bg-transparent pl-3 pr-8 py-3  border border-gray-300 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+
                                 <option defaultValue={doctorData.experience}
-                                        value={doctorData.experience}>{doctorData.experience}</option>
+                                        value={doctorData.experience} hidden>{doctorData.experience}</option>
                                 {yearsOfExperience.map((ele, index) => (
                                     <option key={index} value={ele}>{ele}</option>
                                 ))}
-
                             </select>
-
                         </div>
                         :
                         <div className="flex flex-row gap-2 ml-1">
-                            <p className="text-gray-600">{doctorData.degree}</p>
                             <p className="font-medium uppercase text-zinc-600">{doctorData.speciality}</p>
+                            <p className="text-gray-600">{doctorData.degree}</p>
                             <button
                                 className=" px-3 border
                                  border-white text-xs rounded-full
@@ -113,70 +114,87 @@ useEffect(() => {
                         </div>
                     }
                 </Fragment>
-                {/*------------------------Doctor About Dev----------------------*/}
+                {/*/!*------------------------Doctor About Dev----------------------*!/*/}
                 <Fragment>
                     {
                         edite ?
                             <div className="w-full">
-                                <p className="text-m font-medium text-neutral-800 mt-3">About</p>
+                                <p className="text-m font-medium text-neutral-800 mt-3 mb-3">About</p>
                                 <TextEditor
                                     value={doctorData.about}
-                                    onChange={(e)=>setDoctorData(prev=>({...prev,about:e.target.value}))}
+                                    onChange={(e)=>setDoctorData((prev)=>({...prev,about:e.target.value}))}
+
                                 />
 
                             </div>
                         : <div>
-                            <p className="flex items-center gap-1 text-sm font-medium text-neutral-800 mt-3">About:</p>
+                            <p className="flex items-center gap-1 text-sm font-medium text-neutral-800 mt-3 ">About:</p>
                             <p className="text-sm text-gray-600 max-w-[700px] mt-1">{doctorData.about}</p>
                         </div>
                 }
                 </Fragment>
 
-                {/*-----------------------------------------Doctor Data-----------------------------------------------------*/}
-                    <Fragment>
+                {/*/!*-----------------------------------------Doctor Data-----------------------------------------------------*!/*/}
+                <Fragment>
 
                         {edite?
                             <div className="flex flex-col">
-                                <label className="text-m font-medium text-neutral-800 mt-3">Email</label>
-                                <input
-                                    required
-                                    value={doctorData.email}
-                                    onChange={(e)=>setDoctorData(prev=>({...prev,email:e.target.value}))}
-                                    className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                                     type="text" placeholder="Enter Eamil"
-                                />
-                                <label className="text-m font-medium text-neutral-800 mt-3">Phone</label>
-                                <input
-                                    required
-                                    value={doctorData.phone}
-                                    onChange={(e)=>setDoctorData(prev=>({...prev,phone:e.target.value}))}
-                                    className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                                    type="text" placeholder="Enter Phone"
-                                />
+                               <div className="flex flex-row items-center mt-4 md:col-auto">
+                                <div className="w-full mr-3 ">
+                                <label className="text-m font-medium text-neutral-800">Email</label>
+                                    <input
+                                        required
+                                        value={doctorData.email}
+                                        onChange={(e) => setDoctorData(prev => ({...prev, email: e.target.value}))}
+                                        className="mr-2 w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border
+                                        border-slate-200 rounded-md px-3 py-3 transition duration-300
+                                        ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                        type="text" placeholder="Enter Eamil"
+                                    />
+                                    <div>
+                                    </div>
+                                    </div>
+                                    <div className="w-full">
+                                        <label className="text-m font-medium text-neutral-800 mt-3">Phone</label>
+                                        <PhoneInput
+                                            inputProps={{
+                                                required: true,
+                                                name: 'phone',
+                                            }}
+                                            inputClass=" !pl-12 !h-[13%] !w-full !bg-transparent !placeholder:text-slate-400  !text-slate-700 !text-sm !border !border-slate-200 !rounded-md !px-3 !py-3 !transition !duration-300 !ease !focus:outline-none !focus:border-slate-400 !hover:border-slate-300 !shadow-sm !focus:shadow"
+                                            country='us'
+                                            regions={['america', 'europe', 'asia', 'oceania', 'africa']}
+                                            onChange={phone => setDoctorData((prev) => ({...prev, phone: phone}))}
+                                            value={doctorData.phone}
+                                            enableAreaCodes={true}
+                                            enableAreaCodeStretch
+                                        />
+                                    </div>
+                                </div>
                                 <label className="text-m font-medium text-neutral-800 mt-3">Fee</label>
                                 <input
                                     required
                                     value={doctorData.fess}
-                                    onChange={(e)=>setDoctorData(prev=>({...prev,fess:e.target.value}))}
+                                    onChange={(e) => setDoctorData(prev => ({...prev, fess: e.target.value}))}
                                     className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                                     type="text" placeholder="Enter Fee"
                                 />
                                 <p className="text-m font-medium text-neutral-800 mt-3">Address</p>
                                 <div className="flex flex-row items-center ">
-                                <input
-                                    required
-                                    value={JSON.parse(doctorData.address).line1}
-                                    onChange={(e)=>setDoctorData((prev) => ({
-                                        ...prev, address: {...prev.address, line1: e.target.value},
-                                    }))}
-                                    className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                                    type="text" placeholder="Enter Address"
-                                />
-                                <input
-                                    required
-                                    value={JSON.parse(doctorData.address).line2}
-                                    onChange={(e)=>setDoctorData((prev) => ({
-                                        ...prev, address: {...prev.address, line2: e.target.value},
+                                    <input
+                                        required
+                                        value={JSON.parse(doctorData.address).line1}
+                                        onChange={(e) => setDoctorData((prev) => ({
+                                            ...prev, address: {...prev.address, line1: e.target.value},
+                                        }))}
+                                        className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                        type="text" placeholder="Enter Address"
+                                    />
+                                    <input
+                                        required
+                                        value={JSON.parse(doctorData.address).line2}
+                                        onChange={(e) => setDoctorData((prev) => ({
+                                            ...prev, address: {...prev.address, line2: e.target.value},
                                     }))}
                                     className="w-full ml-2 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                                     type="text" placeholder="Enter Address"
@@ -186,8 +204,8 @@ useEffect(() => {
                             : <div className="flex flex-col  py-2 ">
                                 <p className="text-sm font-medium text-neutral-800  mt-4 ">Doctor Email : <span
                                     className="text-zinc-600 mx-2">{doctorData.email}</span></p>
-                                <p className="text-sm font-medium text-neutral-800  mt-4 ">Phone Number : <span
-                                    className="text-zinc-600  mx-2">{doctorData.phone}</span></p>
+                                <p className="text-sm font-medium text-neutral-800  mt-4 ">Phone Number :
+                                    <span className="text-zinc-600  mx-2">{doctorData.phone}</span></p>
                                 <p className="text-sm font-medium text-neutral-800  mt-4 ">Appointment Fee :<span
                                     className="text-gray-800 mx-2">{currency} {doctorData.fess}</span></p>
                                 <p className="text-sm font-medium text-neutral-800  mt-4">Address:</p>
@@ -199,8 +217,6 @@ useEffect(() => {
                         </div>
                         }
                     </Fragment>
-
-
 
                 <div className="flex gap-1.5 pt-2 mt-2" >
                     <label className="flex items-center cursor-pointer relative">

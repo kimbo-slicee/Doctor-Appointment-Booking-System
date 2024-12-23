@@ -4,6 +4,7 @@ import axios from "axios";
 import {Bounce, toast} from "react-toastify";
 import Spinner from "../components/Spinner.jsx";
 import {DoctorContext} from "../context/DoctorContext.jsx";
+import {useNavigate} from "react-router-dom";
 const Login=()=>{
     const [state,setState]=useState("Admin");
     const [email,setEmail]=useState('');
@@ -11,6 +12,7 @@ const Login=()=>{
     const {setAdminToken,backEndUrl}=useContext(AdminContext)
     const {setDoctorToken}=useContext(DoctorContext)
     const [loading,setLoading]=useState(false)
+    const navigate=useNavigate();
     const submitHandler=async (e)=>{
         e.preventDefault();
         setLoading(true)
@@ -18,9 +20,11 @@ const Login=()=>{
             if(state==="Admin"){
                 const {data}=await axios.post(`${backEndUrl}/admin/login`,{email,password})
                 if(data.success) {
+                    navigate('/DashBoard')
                     localStorage.setItem('adminToken',`Bearer ${data.token}`);
                     setAdminToken(`Bearer ${data.token}`);
                     setLoading(false);
+
                 }else {
                     toast(data.message,{type:"error"})
                     setLoading(false);
@@ -28,6 +32,7 @@ const Login=()=>{
             }else{
                 const {data}=await axios.post(`${backEndUrl}/doctor/login`,{email,password})
                 if(data.success){
+                    navigate('/Doctor_DashBord')
                     toast("Login Successful",{type:"success"});
                     setDoctorToken(`Bearer ${data.token}`);
                     localStorage.setItem("doctorToken",`Bearer ${data.token}`);

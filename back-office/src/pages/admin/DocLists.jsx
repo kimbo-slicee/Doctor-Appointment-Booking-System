@@ -14,7 +14,7 @@ const DocLists=()=>{
             <div className="w-full grid grid-cols-auto gap-4 pt-5 gap-y-6 px-3 sm:px-0">
                 {
                     doctors.map((doctor,index)=>(
-                        <div onClick={()=>navigateFunction(`/AddDoctors/${doctor._id}`)}
+                        <div onClick={()=>navigateFunction(`/doctor/${doctor._id}`)}
                              key={index}
                              className="border border-blue-200 rounded-xl overflow-hidden cursor-pointer
                              hover:translate-y-[-10px] transition-all

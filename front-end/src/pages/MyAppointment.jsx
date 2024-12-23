@@ -9,7 +9,6 @@ function MyAppointments() {
     const months=[" ","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","sep","Oct","Nov","Dec"];
     const location = useLocation();
     const navigate=useNavigate();
-    // Extract Order ID from query string
     const queryParams = new URLSearchParams(location.search);
     const orderId = queryParams.get("token");
     const slotDateFormat=(slotDate)=>{
@@ -115,14 +114,36 @@ function MyAppointments() {
                 <p className="text-xs mt-1.5"><span className="text-sm text-neutral-800 font-medium mx-1">Date & Time   :</span>  {slotDateFormat(item.slotDate)} |{item.slotTime}</p>
               </div>
                 <div className="flex flex-col gap-2 justify-end">
-                    {!item.cancelled &&  <button onClick={()=>handlePayment(item._id)}
-                                                 className={item.payment?"text-sm text-stone-500 text-center" +
-                                                     " sm:min-w-48 py-2 border rounded bg-green-500 text-white":"text-sm" +
-                                                     " text-stone-500 text-center sm:min-w-48 py-2 border rounded bg-primary text-white"}>
-                        {item.payment? "Appointment Booked ":"Booked Online"}</button>}
-                    {!item.cancelled && <button onClick={()=>cancelAppointment(item._id)} className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-500">Cancel Appointment </button>}
-                    {item.cancelled && !item.payment && <button  className="text-sm text-white
-                    bg-red-600 text-center sm:min-w-48 p-3 border rounded cursor-not-allowed">Appointment Canceled</button> }
+                    {
+                        !item.cancelled && !item.isCompleted &&
+                        <button
+                            onClick={()=>handlePayment(item._id)}
+                            className={
+                            item.payment
+                            ? "text-sm text-center sm:min-w-48 py-2 border  rounded bg-green-500 text-white"
+                            : "text-sm text-center sm:min-w-48 py-2 border rounded bg-primary text-white"
+                            }>
+                        {item.payment? "Appointment Booked ":"Booked Online"}
+                        </button>
+                    }
+                     {
+                         !item.cancelled && !item.payment && !item.isCompleted &&
+                         <button
+                          onClick={()=>cancelAppointment(item._id)}
+                          className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border
+                          rounded hover:bg-red-600 hover:text-white transition-all duration-500">
+                             Cancel Appointment
+                         </button>
+                     }
+                    {
+                        item.cancelled && !item.payment &&
+                        <button
+                            className="text-sm text-white bg-red-600 text-center
+                            sm:min-w-48 p-3 border rounded cursor-not-allowed">
+                            Appointment Canceled
+                        </button>
+
+                    }
                 </div>
             </div>
         ))}

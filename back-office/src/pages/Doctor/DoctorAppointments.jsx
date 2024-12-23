@@ -54,8 +54,6 @@ const DoctorAppointments=()=>{
                             </div>
                             <p >{currency} {appointment.amount}</p>
                             <div className="flex flex-nowrap items-center gap-1.5 ">
-                                {/* if an appointment is cancelled we Dont can to complete this appointment if the
-                                 appointment is conceder as canceled we don't can to compliant' it but we can deleted  */}
                                 {
                                     appointment.cancelled
                                         ? <p className="text-red-400 text-xs font-medium"> Cancelled</p>

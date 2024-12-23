@@ -5,7 +5,10 @@ import {toast} from "react-toastify";
 import axios from "axios";
 import Spinner from "../../components/Spinner.jsx";
 import {useNavigate} from "react-router-dom";
+import {TextEditor} from "../../components/TextEditor.jsx";
 const AddDoc=()=>{
+    const {backEndUrl,adminToken}=useContext(AdminContext);
+    const navigate=useNavigate();
     const [docImage,setDocImage]=useState('');
     const [name,setName]=useState('');
     const [email,setEmail]=useState('');
@@ -19,9 +22,7 @@ const AddDoc=()=>{
     const [address1,setAddress1]=useState('');
     const [address2,setAddress2]=useState('');
     const [availability,setAvailability]=useState(true);
-    const  {backEndUrl,adminToken}=useContext(AdminContext);
     const [loading, setLoading] = useState(false);
-    const navigate=useNavigate();
 
     const handelSubmit = async (e)=>{
         e.preventDefault();
@@ -147,7 +148,6 @@ const AddDoc=()=>{
                                         value={address2} type="text" placeholder="Addesss 2"
                                         className="border rounded px-3 py-3 mt-1"/>
                              </div>
-                             {/*  Radio input*/}
                              <div className="flex-1 flex flex-col gap-1">
                                  <p>Availability</p>
                                  <div className="flex flex-row gap-5">
@@ -157,8 +157,8 @@ const AddDoc=()=>{
                                              <input name="Availability" type="radio"
                                                     onClick={() => setAvailability(true)}
                                                     className="peer h-5 w-5 cursor-pointer
-                                             appearance-none rounded-full border
-                                             border-primary checked:border-primary transition-all"
+                                                     appearance-none rounded-full border
+                                                     border-primary checked:border-primary transition-all"
                                                     id="avliable" defaultChecked={true}/>
                                              <span
                                                  className="absolute bg-primary w-3 h-3
@@ -197,9 +197,9 @@ const AddDoc=()=>{
                      </div>
                      <div>
                          <p className="mt-4 mb-2 ">About</p>
-                         <textarea onChange={e => setAbout(e.target.value)} value={about}
-                                   className="w-full px-2 pt-3 border rounded" rows={5}
-                                   placeholder="write about yourself..."/>
+                         <TextEditor
+                         value={about} onChange={(e)=>setAbout(e.target.value)}
+                         />
                      </div>
                      <button className="bg-primary text-white rounded-full px-10 py-3 mt-3 ">Add Doctor</button>
                  </div>

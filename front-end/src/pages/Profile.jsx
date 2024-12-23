@@ -10,7 +10,7 @@ function Profile() {
   const [image,setImage]=useState(false);
 
           const formData = new FormData();
-          formData.append('name', userData.name || ""); // Default to empty string if undefined
+          formData.append('name', userData.name || "");
           formData.append('email', userData.email || "");
           formData.append('phone', userData.phone || "");
           formData.append('address', userData.address );

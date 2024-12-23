@@ -3,7 +3,7 @@ import {StatusCodes} from "http-status-codes";
 import UnauthenticatedError from "../Error/unauthenticatedError.js";
 import {CustomError} from "../Error/index.js";
 import AppointmentModel from "../models/appointment.js";
-import appointment from "../models/appointment.js";
+import {v2 as cloudinary} from "cloudinary";
 const getAllocators=async(req, res)=>{
     // ++ Pagination and search
     const allDoctors=await DoctorModel.find({})
@@ -108,11 +108,28 @@ const doctorProfile=async (req,res)=>{
 }
 // Update Doctor Profile Controller
 const updateDoctorProfile=async (req,res)=>{
-// check for Doctor Id
+    const {
+        body:{name,speciality,experience,email,phone,address,about,fess,available},
+        docId,
+        file
+    }=req
+    if(!docId) throw new CustomError("Doctor Not Found ",StatusCodes.BAD_REQUEST);
+    if(!name||!speciality||!experience||!email||!phone||!address||!about||!fess||!available) throw new CustomError("All Fields are Required ",StatusCodes.BAD_REQUEST)
+    // check about the image if has been UpDate or not if image Uploaded we will changer if Not we will use just the
+    // previous one
+    console.log(req.body)
+    if(file){
+        const imageUpload=await cloudinary.uploader.upload(file.path,{resource_type:"image"});
+        const imageURL=imageUpload.secure_url;
+        await DoctorModel.findByIdAndUpdate(docId,{image:imageURL});
+    }
+    const updatedDoctorData=await DoctorModel.findByIdAndUpdate(docId,{name,speciality,experience,email,phone,address,about,fess,available})
+    res.status(StatusCodes.OK).json({success:true,data:updatedDoctorData,message:"Profile Updated successfully"})
 
 }
 // Delete Doctor Profile Controller
 const deleteDoctorProfile=async (req, res)=>{
+
 
 }
 

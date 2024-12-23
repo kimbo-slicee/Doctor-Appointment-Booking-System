@@ -55,6 +55,8 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import {AutoLinkPlugin} from "@lexical/react/LexicalAutoLinkPlugin";
+import {ClearEditorPlugin} from "@lexical/react/LexicalClearEditorPlugin";
 
 const LowPriority = 1;
 
@@ -80,6 +82,25 @@ const blockTypeToBlockName = {
     quote: "Quote",
     ul: "Bulleted List",
 };
+const URL_MATCHER =
+    /((https?:\/\/(www\.)?)|(www\.))[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+
+const MATCHERS = [
+    (text) => {
+        const match = URL_MATCHER.exec(text);
+        if (match === null) {
+            return null;
+        }
+        const fullMatch = match[0];
+        return {
+            index: match.index,
+            length: fullMatch.length,
+            text: fullMatch,
+            url: fullMatch.startsWith('http') ? fullMatch : `https://${fullMatch}`,
+            // attributes: { rel: 'noreferrer', target: '_blank' }, // Optional link attributes
+        };
+    },
+];
 
 function Divider() {
     return <div className="mx-1 h-6 w-px bg-gray-400" />;
@@ -280,7 +301,7 @@ function BlockOptionsDropdownList({
                         ></path>
                     </svg>
                 </ListItemPrefix>
-                Normal
+                  Normal
             </ListItem>
             <ListItem
                 selected={blockType === "h1"}
@@ -678,7 +699,7 @@ function FloatingLinkEditor({ editor }) {
         <div
             ref={editorRef}
             className="absolute -left-[10000px] -top-[10000px] z-[100] -mt-1.5 w-full
-             max-w-xs rounded-lg border border-gray-300 bg-white opacity-0 transition-opacity duration-500 "
+             max-w-xs rounded-lg  border border-gray-300 bg-white opacity-0 transition-opacity duration-500 "
         >
             {isEditMode ? (
                 <Input
@@ -701,7 +722,7 @@ function FloatingLinkEditor({ editor }) {
                             setEditMode(false);
                         }
                     }}
-                    className="border-gray-200 !border-t-gray-200 focus:!border-gray-900 focus:!border-t-gray-900"
+                    className="border-gray-200  !border-t-gray-200 focus:!border-gray-900 focus:!border-t-gray-900"
                     labelProps={{
                         className: "hidden",
                     }}
@@ -848,7 +869,7 @@ function ToolbarPlugin() {
 
     return (
         <div
-            className=" flex items-center gap-0.5 rounded-l bg-gray-200 p-1"
+            className=" flex items-center gap-0.5 rounded-l bg-primary text-white p-1"
             ref={toolbarRef}
         >
             {supportedBlockTypes.has(blockType) && (
@@ -858,14 +879,14 @@ function ToolbarPlugin() {
                         onClick={() =>
                             setShowBlockOptionsDropDown(!showBlockOptionsDropDown)
                         }
-                        className="flex items-center gap-1 font-medium capitalize"
+                        className="flex items-center text-white gap-1 font-medium capitalize"
                         aria-label="Formatting Options"
                     >
                         {blockTypeToBlockName[blockType]}
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 16 16"
-                            fill="currentColor"
+                            fill="white"
                             className="h-4 w-4"
                         >
                             <path
@@ -891,7 +912,8 @@ function ToolbarPlugin() {
             {blockType === "code" ? (
                 <>
                     <Select
-                        className="appearance-none rounded-md bg-transparent px-2 py-1 outline-none hover:bg-gray-900/10"
+                        className="appearance-none
+                        text-white rounded-md bg-transparent px-2 py-1 outline-none hover:bg-gray-900/10"
                         onChange={onCodeLanguageSelect}
                         options={codeLanguges}
                         value={codeLanguage}
@@ -911,7 +933,7 @@ function ToolbarPlugin() {
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
-                            color="currentColor"
+                            color="white"
                             className="h-5 w-5"
                         >
                             <path
@@ -933,7 +955,7 @@ function ToolbarPlugin() {
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
-                            color="currentColor"
+                            color="white"
                             className="h-5 w-5"
                         >
                             <path
@@ -957,7 +979,7 @@ function ToolbarPlugin() {
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
-                            color="currentColor"
+                            color="white"
                             className="h-5 w-5"
                         >
                             <path
@@ -993,7 +1015,7 @@ function ToolbarPlugin() {
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
-                            color="currentColor"
+                            color="white"
                             className="h-5 w-5"
                         >
                             <path
@@ -1039,51 +1061,52 @@ const editorConfig = {
 };
 
 export function TextEditor({ value, onChange }) {
+    const isFirstRender = useRef(true);
     const SimplePlugin = () => {
         const [editor] = useLexicalComposerContext();
-
-        // Sync the initial value into the editor
         useEffect(() => {
-            if (value) {
+            if (isFirstRender.current && value) {
                 editor.update(() => {
-
                     const root = $getRoot();
-                    root.clear(); // Clears all nodes from the root
-
-                    // Create a new paragraph node with the initial value
+                    root.clear(); // Clear existing content
                     const paragraph = $createParagraphNode();
                     const textNode = $createTextNode(value);
                     paragraph.append(textNode);
                     root.append(paragraph);
                 });
+                isFirstRender.current = false
             }
+
         }, [value, editor]);
 
-        // Send changes back to the parent
         useEffect(() => {
+            // Throttle or debounce updates to parent state
             const unsubscribe = editor.registerUpdateListener(({ editorState }) => {
                 editorState.read(() => {
                     const root = $getRoot();
                     const content = root.getTextContent();
-                    onChange({ target: { value: content } });
+                    if (content !== value) {
+                        onChange({ target: { value: content } });
+                    }
                 });
             });
 
             return () => unsubscribe();
-        }, [editor]);
+        }, [editor, value, onChange]);
 
         return null;
     };
     return (
         <LexicalComposer initialConfig={editorConfig} >
             <div className="relative overflow-hidden w-full rounded-l
-            border border-gray-300 bg-white text-left font-normal leading-5 text-gray-900">
+                 border border-gray-300 bg-white text-left font-normal leading-5 text-gray-900">
                 <ToolbarPlugin />
-                <div className="relative rounded-b-lg border-opacity-5 bg-white">
+                <div className="relative rounded-b-lg border-opacity-5 bg-white ">
                     <RichTextPlugin
                         contentEditable={
                             <ContentEditable
-                                className="lexical min-h-[280px]  resize-none px-2.5 py-4 text-base caret-gray-900 outline-none"
+                                className="lexical min-h-[280px]
+                                 resize-none px-2.5 py-4 text-base caret-gray-900 outline-none"
                             />
                         }
                         placeholder={<Placeholder />}
@@ -1093,6 +1116,8 @@ export function TextEditor({ value, onChange }) {
                     <ListPlugin />
                     <LinkPlugin />
                     <SimplePlugin />
+                    <AutoLinkPlugin matchers={MATCHERS} />
+                    <ClearEditorPlugin />
                 </div>
             </div>
         </LexicalComposer>
