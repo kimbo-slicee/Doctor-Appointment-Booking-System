@@ -8,7 +8,7 @@ import {
     adminDashBoard
 } from "../controllers/adminController.js";
 import upload from "../middlewares/multer.js";
-import authAdminMiddleware from "../middlewares/auth.js";
+import authAdminMiddleware from "../middlewares/auth.middleware.js";
 import {changeAvailability} from "../controllers/doctorController.js";
 const adminRouter =express.Router();
 adminRouter.route('')

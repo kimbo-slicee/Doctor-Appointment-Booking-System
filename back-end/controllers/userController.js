@@ -1,6 +1,5 @@
 import {StatusCodes} from "http-status-codes";
-import validator from "validator";
-import userModel from "../models/user.js";
+import UserModel from "../models/user.js";
 import NotFound from "../Error/notFound.js";
 import unauthenticatedError from "../Error/unauthenticatedError.js";
 import {CustomError} from "../Error/index.js";
@@ -12,25 +11,16 @@ import axios from "axios";
 // Register Controller
 const register=async (req, res)=>{
 const {name,email,password,phone}=req.body;
-if(!name || !email || !password || !phone){
-    return req.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Missing Details"})
-}
-if(!validator.isEmail(email)){
-    throw new CustomError("Email Not Valid ",StatusCodes.BAD_REQUEST)
-}
-if(password.length<0){
-    return req.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Enter a Strong password"});
-}
-    const user=await userModel.create({...req.body});
-    const token=user.createJWT();
-    res.status(StatusCodes.CREATED).json({success:true,token});
-}
+// Verify User Data
 
-//Login Controller
+
+}
+//
+// //Login Controller
 const login=async (req,res)=>{
 const {email,password}=req.body;
 if(!email || !password)return  res.status(StatusCodes.NOT_FOUND).json({success:false,msg:"Invalid Email or password"});
-const user=await userModel.findOne({email});
+const user=await UserModel.findOne({email});
 if(!user)throw new NotFound("User doesn't Existe")
 const checkPassword= user.comparePassword(password);//check User password if it's the same in DB
 if(!checkPassword) throw new unauthenticatedError("invalid credentials");
@@ -40,11 +30,11 @@ res.status(StatusCodes.OK).json({success:true,token});
 // Get User Data API
 const userData=async (req,res)=>{
     const {userID}=req;
-    const user=await userModel.findById({_id:userID}).select("-password")
+    const user=await UserModel.findById({_id:userID}).select("-password")
     if(!user) throw new CustomError("User Not Found");
     res.status(StatusCodes.OK).json({success:true,data:user});
 }
-//  Update User Data API
+// //  Update User Data API
 const upDateUserData=async (req,res)=>{
     const {userID}=req;
     const {name,email,phone,password,address,gender,dob}=req.body;
@@ -53,24 +43,24 @@ const upDateUserData=async (req,res)=>{
         throw new CustomError("All Files Are Require",StatusCodes.BAD_REQUEST);
     }
 
-    await userModel.findByIdAndUpdate(userID,{name,email,phone,password,address,gender,dob});
+    await UserModel.findByIdAndUpdate(userID,{name,email,phone,password,address,gender,dob});
     if(fileImage){
         const imageUpload=await cloudinary.uploader.upload(fileImage.path,{resource_type:"image"});
         const imageURL=imageUpload.secure_url;
-        await userModel.findByIdAndUpdate(userID,{image:imageURL});
+        await UserModel.findByIdAndUpdate(userID,{image:imageURL});
     }
     res.status(StatusCodes.OK).json({success:true,message:"Profile updated Succfuly"})
 }
-//  Delete Profile API
+// //  Delete Profile API
 const deleteUser= async (req, res)=>{
     const {userId}=req.user;
     if(!userId){
         throw new CustomError("User Id Not Found",StatusCodes.BAD_REQUEST);
     }
-    await userModel.findByIdAndDelete(userId);
+    await UserModel.findByIdAndDelete(userId);
     res.status(StatusCodes.OK).json({success:true,message:"User Account Deleted Succfuly"});
 }
-//  API to book Appointment
+// //  API to book Appointment
 const bookAppointment=async (req, res)=>{
     const {docId,slotDate,slotTime,userData}=req.body;
     const {userID}=req
@@ -95,7 +85,7 @@ const bookAppointment=async (req, res)=>{
         slots_booked[slotDate]=[];
         slots_booked[slotDate].push(slotTime)
     }
-    const user =await userModel.findById({_id:userID}).select("-password");
+    const user =await UserModel.findById({_id:userID}).select("-password");
     delete doctor.slots_booked;
     const appointment=await AppointmentModel.create(
         {
@@ -140,7 +130,7 @@ const cancelAppointment=async (req,res)=>{
 // User Oline Payment
 const onlinePayment = async (req, res) => {
     const {userID}=req;
-    const user=await userModel.findById(userID).select(["-password","-image"]);
+    const user=await UserModel.findById(userID).select(["-password","-image"]);
     const { appointmentId } = req.body;
     const appointment=await AppointmentModel.findById({_id:appointmentId});
     const {
@@ -260,6 +250,12 @@ const capturePayment = async (req, res) => {
         });
     }
 };
+const  deleteAppointment=async (req, res)=>{
+
+}
+const  deleteUserProfile=async (req,res)=>{
+
+}
 
 export {
     register,
@@ -271,5 +267,7 @@ export {
     appointmentsList,
     cancelAppointment,
     onlinePayment,
-    capturePayment
+    capturePayment,
+    deleteAppointment,
+    deleteUserProfile
 }

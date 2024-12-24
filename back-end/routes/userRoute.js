@@ -8,26 +8,27 @@ import {
     bookAppointment,
     appointmentsList,
     cancelAppointment,
-    onlinePayment, capturePayment
+    onlinePayment, capturePayment, deleteAppointment,deleteUserProfile
 } from "../controllers/userController.js";
-import userAuth from "../middlewares/userAuth.js";
 import upload from "../middlewares/multer.js";
+import authMiddleware from "../middlewares/auth.middleware.js";
 const userRoute=express.Router();
-// AUTHENTICATION USER ROUTES
+// USER AUTHENTICATION ROUTES
 userRoute.route('/register').post(register);
 userRoute.route('/login').post(login);
-// PROFILE ROUTES
+// USER PROFILE ROUTES
 userRoute.route('/profile')
-    .get(userAuth,userData)
-    .delete(userAuth,deleteUser)
-    .patch(upload.single("image"),userAuth,upDateUserData);
+    .get(authMiddleware,userData)
+    .delete(authMiddleware,deleteUser)
+    .patch(authMiddleware,upload.single("image"),upDateUserData)
+    .delete(authMiddleware,deleteUserProfile)
 // USER APPOINTMENTS ROUTES
 userRoute.route('/appointment')
-    .post(userAuth,bookAppointment)
-    .get(userAuth,appointmentsList)
-    .patch(userAuth,cancelAppointment)
-// PAYMENT ROUTES
-userRoute.route('/appointment/create-payment').post(userAuth,onlinePayment)
-userRoute.route('/appointment/capture-payment/:orderId').post(userAuth,capturePayment)
-
+    .get(authMiddleware,appointmentsList)
+    .post(authMiddleware,bookAppointment)
+    .patch(authMiddleware,cancelAppointment)
+    .delete(authMiddleware,deleteAppointment)
+// USER PAYMENT ROUTES
+userRoute.route('/appointment/create-payment').post(authMiddleware,onlinePayment)
+userRoute.route('/appointment/capture-payment/:orderId').post(authMiddleware,capturePayment)
 export default userRoute

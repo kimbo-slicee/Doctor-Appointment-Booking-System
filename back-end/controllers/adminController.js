@@ -1,69 +1,36 @@
 import {StatusCodes} from "http-status-codes";
 import {v2 as cloudinary} from "cloudinary";
 import DoctorModel from "../models/doctor.js";
-import validator from "validator";
-import jwt from "jsonwebtoken";
-import {CustomError} from "../Error/index.js";
+import {CustomError,unauthenticatedError} from "../Error/index.js";
 import AppointmentModel from "../models/appointment.js";
 import userModel from "../models/user.js";
-// login Controller
+import BadRequestError from "../Error/badRequest.js";
+import UserModel from "../models/user.js";
+import UnauthenticatedError from "../Error/unauthenticatedError.js";
+/*Admin Login Controller*/
  const login=async (req,res)=>{
-    const {email,password}=req.body;
-    if(email===process.env.ADMIN_EMAIL && password===process.env.ADMIN_PASSWORD){
-        try{
-            const token=await jwt.sign({email,password},process.env.JWT_SECRET);// create new Jwt Token
-            res.status(StatusCodes.OK).json({success:true,token:token});
-        }catch (error){
-           throw new  CustomError("UNAUTHORIZED USER",StatusCodes.UNAUTHORIZED)
-        }
-
-    }else{
-            res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Email or password are not Valid"});
-
-    }
-
+     const {email, password}=req.body;
+     if(!email || !password)throw new BadRequestError("Email or password not Valid !");
+     const admin=await UserModel.findOne({email})
+     if(!admin) throw new unauthenticatedError("Unauthenticated");
+     const passwordValidation=await admin.comparePassword(password);
+     if(!passwordValidation) throw new UnauthenticatedError("Unauthenticated")
+     const token=admin.createJWT()
+     res.status(StatusCodes.OK).json({success:true,token,error:"Login Succfuly"})
  }
 const createDoc=async (req,res)=>{
     // First we need To Check Admin Credentials
     const {user}=req.user
-    // if(user.role==="admin" &&  typeof user.role==="string"){}
     const {name,email,password,experience,phone,degree,about,fess,speciality,available,address}=req.body
 
     // Starting Adding New Admin
     const imageFile=req.file;
-    if(
-        !name
-        || !email
-        || !password
-        || !phone
-        || !degree
-        || !about
-        || !fess
-        || !speciality
-        || !address
-    ){
+    if(!name || !email || !password || !phone || !degree || !about || !fess || !speciality || !address){
         return  res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"All Fields Are Require "})
-    }
-    if(!validator.isEmail(email)){
-        return res.status(StatusCodes.BAD_REQUEST).json({success:false,message:"Please Enter a Valid Email"})
     }
     const imageUpload=await cloudinary.uploader.upload(imageFile.path,{resource_type:"image"});
     const imageUrl=imageUpload.secure_url;
-    const newDoctor={
-        name,
-        email,
-        password,
-        phone,
-        degree,
-        about,
-        fess,
-        experience,
-        image:imageUrl,
-        speciality,
-        available,
-        address,
-        date:Date.now()
-    };
+    const newDoctor={name, email, password, phone, degree, about, fess, experience, image:imageUrl, speciality, available, address, date:Date.now()};
     const doctor = await DoctorModel.create(newDoctor);
     res.status(StatusCodes.OK).json({success:true,data:doctor})
 }
@@ -122,8 +89,8 @@ const adminDashBoard=async (req,res)=>{
 
 }
 export {
-    createDoc,
     login,
+    createDoc,
     getAllDoctors,
     getAllAppointments,
     cancelAppointment,

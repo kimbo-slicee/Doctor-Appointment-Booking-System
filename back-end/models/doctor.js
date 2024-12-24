@@ -66,7 +66,7 @@ const doctorSchema=new mongoose.Schema({
     },
     date:{
         Type:Number,
-
+        //
     },
     slots_booked:{
         type:Object,
