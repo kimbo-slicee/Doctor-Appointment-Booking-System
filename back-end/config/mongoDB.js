@@ -1,5 +1,5 @@
 import  mongoose from "mongoose";
-import UserModel from "../models/user.js";
+import UserModel from "../models/user.model.js";
 const connectDB =async ()=>{
     mongoose.connection.on('connected',async ()=>{
         console.log("MONGO DB CONNECTED SUCCESSFULLY ✅")

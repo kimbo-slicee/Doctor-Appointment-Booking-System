@@ -1,11 +1,11 @@
 import {StatusCodes} from "http-status-codes";
-import UserModel from "../models/user.js";
-import NotFound from "../Error/notFound.js";
-import unauthenticatedError from "../Error/unauthenticatedError.js";
+import UserModel from "../models/user.model.js";
+import NotFoundError from "../Error/notFound.error.js";
+import unauthenticatedError from "../Error/unauthenticated.error.js";
 import {CustomError} from "../Error/index.js";
 import {v2 as cloudinary} from "cloudinary";
-import DoctorModel from "../models/doctor.js";
-import AppointmentModel from "../models/appointment.js";
+import DoctorModel from "../models/doctor.model.js";
+import AppointmentModel from "../models/appointment.model.js";
 import {getAccessToken} from "../config/paypal.js";
 import axios from "axios";
 // Register Controller
@@ -21,7 +21,7 @@ const login=async (req,res)=>{
 const {email,password}=req.body;
 if(!email || !password)return  res.status(StatusCodes.NOT_FOUND).json({success:false,msg:"Invalid Email or password"});
 const user=await UserModel.findOne({email});
-if(!user)throw new NotFound("User doesn't Existe")
+if(!user)throw new NotFoundError("User doesn't Existe")
 const checkPassword= user.comparePassword(password);//check User password if it's the same in DB
 if(!checkPassword) throw new unauthenticatedError("invalid credentials");
 const token=user.createJWT();

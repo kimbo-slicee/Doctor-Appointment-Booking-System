@@ -1,8 +1,8 @@
-import DoctorModel from "../models/doctor.js";
+import DoctorModel from "../models/doctor.model.js";
 import {StatusCodes} from "http-status-codes";
-import UnauthenticatedError from "../Error/unauthenticatedError.js";
+import UnauthenticatedError from "../Error/unauthenticated.error.js";
 import {CustomError} from "../Error/index.js";
-import AppointmentModel from "../models/appointment.js";
+import AppointmentModel from "../models/appointment.model.js";
 import {v2 as cloudinary} from "cloudinary";
 const getAllocators=async(req, res)=>{
     // ++ Pagination and search

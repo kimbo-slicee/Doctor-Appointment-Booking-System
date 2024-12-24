@@ -9,8 +9,8 @@ import {
     appointmentsList,
     cancelAppointment,
     onlinePayment, capturePayment, deleteAppointment,deleteUserProfile
-} from "../controllers/userController.js";
-import upload from "../middlewares/multer.js";
+} from "../controllers/user.controller.js";
+import upload from "../middlewares/multer.middleware.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
 const userRoute=express.Router();
 // USER AUTHENTICATION ROUTES

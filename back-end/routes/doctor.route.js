@@ -9,8 +9,8 @@ import {
     getAllocators,
     getDocAppointments,
     login, updateDoctorProfile
-} from '../controllers/doctorController.js'
-import upload from "../middlewares/multer.js";
+} from '../controllers/doctor.controller.js'
+import upload from "../middlewares/multer.middleware.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
 doctorRouter.route('/').get(getAllocators);//
 doctorRouter.route('/login').post(login);// Doctor Login Routing API

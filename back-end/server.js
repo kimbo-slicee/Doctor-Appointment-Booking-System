@@ -4,11 +4,11 @@ import cors from "cors";
 import "dotenv/config.js";
 import connectDB from "./config/mongoDB.js";
 import connectCloudinary from "./config/cloudinaryStorage.js";
-import adminRoute from "./routes/adminRoute.js";
-import doctorRoute from "./routes/doctorRoute.js";
-import errorHandler from "./middlewares/errorHandler.js";
-import notFound from "./middlewares/notFound.js";
-import userRoute from "./routes/userRoute.js";
+import adminRoute from "./routes/admin.route.js";
+import doctorRoute from "./routes/doctor.route.js";
+import errorHandlerMiddleware from "./middlewares/errorHandler.middleware.js";
+import notFound from "./middlewares/notFound.middleware.js";
+import userRoute from "./routes/user.route.js";
 
 // App Config
 const app=express();
@@ -27,7 +27,7 @@ app.use('/api/v1/user',userRoute);// User Routes
 //Error Middlewares
 app.use(notFound);
 // Global error handler (for other types of errors)
-app.use(errorHandler);
+app.use(errorHandlerMiddleware);
 app.listen(port,()=>{
     console.log(`server Listing in Port ${port}`)
 })

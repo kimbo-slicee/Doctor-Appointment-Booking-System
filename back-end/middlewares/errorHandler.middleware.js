@@ -1,6 +1,6 @@
 import {StatusCodes} from "http-status-codes";
 import {CustomError} from "../Error/index.js";
-const errorHandler = (err, req, res,next) => {
+const errorHandlerMiddleware = (err, req, res, next) => {
     if (err instanceof CustomError) {
        return res.status(err.statusCode).json({ success:false, message: err.message });
     }
@@ -11,4 +11,4 @@ const errorHandler = (err, req, res,next) => {
     });
 };
 
-export default errorHandler;
+export default errorHandlerMiddleware;
